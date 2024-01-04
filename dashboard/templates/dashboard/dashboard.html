@@ -1,10 +1,10 @@
-
 {% extends 'base.html' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Papers per Year{% endblock %}
 
 {% block content %}
-<!-- Specific content for the Home page -->
-<h1>Welcome to the Dashboard Page</h1>
-<!-- Rest of the content -->
+<div class="container mt-4">
+    <h1>Papers per Year</h1>
+    <div>{{ chart_div|safe }}</div>
+</div>
 {% endblock %}
