@@ -1,9 +1,10 @@
-# ALF/urls.py
+# Project's urls.py
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('dashboard/', include('dashboard.urls')),  # This includes the URLs from the dashboard app
-    # Add more paths for other apps or functionalities here
+    path('home/', include('home.urls')),         # Home app
+    path('dashboard/', include('dashboard.urls')),  # Dashboard app
+    path('search/', include('search.urls')),  # Search app
 ]

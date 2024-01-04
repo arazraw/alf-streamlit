@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!-- Specific content for the Home page -->
+<h1>Welcome to the Search Page</h1>
+
+<form method="post" action="{% url 'search' %}">
+    {% csrf_token %}
+    <input type="text" name="term" placeholder="Search Term" required>
+    <input type="number" name="total_articles" placeholder="Total Articles" value="200" min="100">
+    <input type="date" name="mindate" placeholder="Min Date" value="2022-01-01" required>
+    <input type="date" name="maxdate" placeholder="Max Date" value="2024-01-01" required>
+    <button type="submit">Search</button>
+</form>
+
+<!-- Table for displaying search results -->
+{% if data %}
+    <table>
+        <!-- Table headers -->
+        <tr>
+            <th>Title</th>
+            <th>PMID</th>
+            <th>DOI</th>
+            <th>Year</th>
+            <th>Affiliations</th>
+        </tr>
+        <!-- Table rows -->
+        {% for record in data %}
+        <tr>
+            <td>{{ record.Title }}</td>
+            <td>{{ record.PMID }}</td>
+            <td>{{ record.DOI }}</td>
+            <td>{{ record.Year }}</td>
+            <td>{{ record.Affiliations }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endif %}
+
+
+{% endblock %}
