@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List of Studies</title>
+</head>
+<body>
+    <h1>List of Studies</h1>
+    <ul>
+        {% for study in studies %}
+            <li>{{ study.title }} - {{ study.year }}</li>
+        {% empty %}
+            <li>No studies found.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
