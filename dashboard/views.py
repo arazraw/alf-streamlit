@@ -1,7 +1,7 @@
 # Dashboard's views.py
 from django.shortcuts import render
 from django.db import models
-from .models import Main
+from search.models import Main  # Update this line
 import plotly.express as px
 import pandas as pd
 
