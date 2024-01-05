@@ -32,6 +32,7 @@ def save_paper(request):
         title = request.POST.get('title')
         doi = request.POST.get('doi')
         year = request.POST.get('year')
+        pmid = request.POST.get('pmid')
         
         # Validate the 'year' field
         try:
@@ -41,7 +42,7 @@ def save_paper(request):
             year = None  # Set a default value or None depending on your needs
 
         # Create a new Main object and save it to the database
-        new_main = Main(title=title, doi=doi, year=year)
+        new_main = Main(title=title, doi=doi, year=year, pmid=pmid)
         new_main.save()
         
         # Return a JSON response
