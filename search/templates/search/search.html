@@ -60,9 +60,10 @@
                             <input type="hidden" name="title" value="{{ record.Title }}">
                             <input type="hidden" name="doi" value="{{ record.DOI }}">
                             <input type="hidden" name="year" value="{{ record.Year }}">
+                            <input type="hidden" name="pmid" value="{{ record.PMID }}">
                             <!-- Add other hidden fields as necessary -->
                             <button type="button" class="btn btn-primary save-btn" data-title="{{ record.Title }}"
-                                data-doi="{{ record.DOI }}" data-year="{{ record.Year }}">Save</button>
+                                data-doi="{{ record.DOI }}" data-year="{{ record.Year }}" data-pmid="{{ record.PMID }}">Save</button>
                         </form>
                     </td>
                 </tr>
@@ -83,6 +84,7 @@
                 'title': btn.data('title'),
                 'doi': btn.data('doi'),
                 'year': btn.data('year'),
+                'pmid': btn.data('pmid'),
                 'form_type': 'save_paper'
             };
 
