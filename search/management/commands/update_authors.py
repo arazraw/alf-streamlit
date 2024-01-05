@@ -1,8 +1,7 @@
 # update_authors.py
 from django.core.management.base import BaseCommand
-from search.models import Main, Authors
+from search.models import Paper, Author
 from Bio import Entrez
-
 
 def fetch_authors_and_affiliations(doi):
     handle = Entrez.esearch(db="pubmed", term=doi)
@@ -26,11 +25,11 @@ def fetch_authors_and_affiliations(doi):
     if 'AuthorList' in article:
         for author in article['AuthorList']:
             author_name = author.get('LastName', '') + ' ' + author.get('ForeName', '')
-            affiliation = author.get('AffiliationInfo', [{}])[0].get('Affiliation', '')
+            affiliation_info = author.get('AffiliationInfo', [{}])
+            affiliation = affiliation_info[0]['Affiliation'] if affiliation_info else ''
             authors_data.append({
                 'name': author_name,
-                'affiliation': affiliation,
-                'author_citations': 0  # Replace with actual citation count if available
+                'affiliation': affiliation
             })
 
     data = {
@@ -41,21 +40,22 @@ def fetch_authors_and_affiliations(doi):
     return data
 
 class Command(BaseCommand):
-    help = 'Fetch authors and their affiliations for each DOI in the Main table'
+    help = 'Fetch authors and their affiliations for each DOI in the Paper table'
 
     def handle(self, *args, **options):
-        for main in Main.objects.all():
+        for paper in Paper.objects.all():
             # Fetch authors and their affiliations for this DOI
-            authors_data = fetch_authors_and_affiliations(main.doi)
+            data = fetch_authors_and_affiliations(paper.doi)
 
-            for author_data in authors_data['Authors']:
-                # Create a new Authors object for each author
-                Authors.objects.create(
-                    main=main,
-                    paper=main.papers,  # Replace with actual paper
-                    name=author_data['name'],
-                    affiliation=author_data['affiliation'],
-                    author_citations=author_data['author_citations']
-                )
+            # Check if data is not None before entering the loop
+            if data is not None:
+                authors_data = data['Authors']
+                for author_data in authors_data:
+                    # Create a new Authors object for each author
+                    Author.objects.create(
+                        paper=paper,
+                        name=author_data['name'],
+                        affiliation=author_data['affiliation']
+                    )
 
         self.stdout.write(self.style.SUCCESS('Successfully updated authors'))

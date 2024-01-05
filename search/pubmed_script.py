@@ -37,6 +37,10 @@ def fetch_articles(term, total_articles, mindate, maxdate):
             title = article.get('ArticleTitle', 'No title available')
             pmid = record['MedlineCitation']['PMID']
             year = article['Journal']['JournalIssue']['PubDate'].get('Year', 'No year available')
+            month = article['Journal']['JournalIssue']['PubDate'].get('Month', 'No month available')
+            journal_title = article['Journal'].get('Title', 'No journal title available')  # Extract JournalTitle
+            abstract_text = article.get('Abstract', {}).get('AbstractText', ['No abstract available'])[0]  # Extract AbstractText
+            publication_type = article.get('PublicationTypeList', ['No publication type available'])[0]  # Extract PublicationType
 
             # Extracting DOI
             doi = None
@@ -62,10 +66,14 @@ def fetch_articles(term, total_articles, mindate, maxdate):
                 'PMID': pmid,
                 'DOI': doi,
                 'Year': year,
+                'Month': month,
+                'JournalTitle': journal_title,  # Include JournalTitle in the data
+                'AbstractText': abstract_text,  # Include AbstractText in the data
+                'PublicationType': publication_type,  # Include PublicationType in the data
                 'Affiliations': '; '.join(unique_affiliations)  # Separated by semicolon
             })
 
         # Pause for a short time before the next batch
-        time.sleep(2)
+        time.sleep(1)
 
     return data
