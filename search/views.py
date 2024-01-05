@@ -1,12 +1,11 @@
 # Search's views.py
 from django.shortcuts import render
-from dashboard.models import Main
+from search.models import Main, Papers  # Update this line
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 
 # Importing scripts to fetch and save articles
 from .pubmed_script import fetch_articles
-
 
 def search(request):
     data = []
@@ -20,8 +19,6 @@ def search(request):
         data = fetch_articles(term, total_articles, mindate, maxdate)
 
     return render(request, 'search/search.html', {'data': data})
-
-
 
 @require_POST
 def save_paper(request):
@@ -46,3 +43,7 @@ def save_paper(request):
         return JsonResponse({'status': 'success'})
 
     return JsonResponse({'status': 'error'}, status=400)
+
+def papers(request):
+    papers = Papers.objects.all()
+    return render(request, 'search/papers.html', {'papers': papers})

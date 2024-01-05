@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Papers</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Topic</th>
+                <th>Citations</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for paper in papers %}
+            <tr>
+                <td>{{ paper.title }}</td>
+                <td>{{ paper.topic }}</td>
+                <td>{{ paper.citations }}</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="3">No papers found.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
