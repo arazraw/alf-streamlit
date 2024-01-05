@@ -1,6 +1,6 @@
 # Search's views.py
 from django.shortcuts import render
-from search.models import Main, Papers  # Update this line
+from search.models import Main, Papers, Authors  # Update this line
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 
@@ -47,3 +47,7 @@ def save_paper(request):
 def papers(request):
     papers = Papers.objects.all()
     return render(request, 'search/papers.html', {'papers': papers})
+
+def authors(request):
+    authors = Authors.objects.all()
+    return render(request, 'search/authors.html', {'authors': authors})

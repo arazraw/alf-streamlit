@@ -7,5 +7,6 @@ urlpatterns = [
     path('', views.search, name='search'),
     path('save_paper/', views.save_paper, name='save_paper'),
     path('papers/', views.papers, name='papers'),
+    path('authors/', views.authors, name='authors'),
     # Add other search-related URLs here
 ]
