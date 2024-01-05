@@ -1,10 +1,12 @@
 # Search's views.py
 from django.shortcuts import render
-from django.shortcuts import redirect
-#from django.views.decorators.csrf import csrf_exempt
 from dashboard.models import Main
 from django.views.decorators.http import require_POST
+from django.http import JsonResponse
+
+# Importing scripts to fetch and save articles
 from .pubmed_script import fetch_articles
+
 
 def search(request):
     data = []
@@ -19,12 +21,7 @@ def search(request):
 
     return render(request, 'search/search.html', {'data': data})
 
-from django.contrib import messages
 
-
-
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST
 
 @require_POST
 def save_paper(request):
