@@ -2,6 +2,7 @@ from django.db import models
 
 class Main(models.Model):
     doi = models.CharField(max_length=100, primary_key=True)
+    pmid = models.CharField(max_length=100)
     title = models.CharField(max_length=200)
     year = models.IntegerField()
 
