@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import Main, Authors, Papers
+from .models import Author, Paper
 
-admin.site.register(Main)
-admin.site.register(Authors)
-admin.site.register(Papers)
+admin.site.register(Author)
+admin.site.register(Paper)

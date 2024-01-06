@@ -2,24 +2,50 @@
 
 {% block content %}
     <h2>Papers</h2>
-    <table class="table table-striped">
+    <table class="table table-striped table-sm">
         <thead>
             <tr>
+                <th>DOI</th>
+                <th>PMID</th>
                 <th>Title</th>
                 <th>Topic</th>
+                <th>Abstract Text</th>
+                <th>Publication Type</th>
+                <th>Journal Title</th>
+                <th>Year</th>
+                <th>Month</th>
                 <th>Citations</th>
+                <th>Influential Citations</th>
+                <th>Basic Science</th>
+                <th>Trial</th>
+                <th>Machine</th>
+                <th>Observational</th>
+                <th>Guideline</th>
             </tr>
         </thead>
         <tbody>
         {% for paper in papers %}
             <tr>
+                <td>{{ paper.doi }}</td>
+                <td>{{ paper.pmid }}</td>
                 <td>{{ paper.title }}</td>
                 <td>{{ paper.topic }}</td>
+                <td>{{ paper.abstract_text }}</td>
+                <td>{{ paper.publication_type }}</td>
+                <td>{{ paper.journal_title }}</td>
+                <td>{{ paper.year }}</td>
+                <td>{{ paper.month }}</td>
                 <td>{{ paper.citations }}</td>
+                <td>{{ paper.influential_citations }}</td>
+                <td>{{ paper.basic_science }}</td>
+                <td>{{ paper.trial }}</td>
+                <td>{{ paper.machine }}</td>
+                <td>{{ paper.observational }}</td>
+                <td>{{ paper.guideline }}</td>
             </tr>
         {% empty %}
             <tr>
-                <td colspan="3">No papers found.</td>
+                <td colspan="16">No papers found.</td>
             </tr>
         {% endfor %}
         </tbody>
