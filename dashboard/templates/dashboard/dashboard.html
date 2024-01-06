@@ -1,10 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %}Papers per Year{% endblock %}
+{% block title %}Dashboard{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-    <h1>Papers per Year</h1>
-    <div>{{ chart_div|safe }}</div>
+    <h1>Dashboard</h1>
+    
+    <h2>Papers per Year</h2>
+    <div>{{ chart_papers_div|safe }}</div>
+
+    <h2>Total Citations per Year</h2>
+    <div>{{ chart_citations_div|safe }}</div>
 </div>
 {% endblock %}
