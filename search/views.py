@@ -1,6 +1,6 @@
 # Search's views.py
 from django.shortcuts import render
-from search.models import Main, Papers, Authors  # Update this line
+from search.models import Paper, Author  # Update this line
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 
@@ -17,6 +17,10 @@ def search(request):
 
         # Fetch articles using your script
         data = fetch_articles(term, total_articles, mindate, maxdate)
+        print(data)  # Add this line
+        # Check if each article is already saved
+        for record in data:
+            record['saved'] = Paper.objects.filter(doi=record['DOI']).exists()
 
     return render(request, 'search/search.html', {'data': data})
 
@@ -27,6 +31,10 @@ def save_paper(request):
         doi = request.POST.get('doi')
         year = request.POST.get('year')
         pmid = request.POST.get('pmid')
+        abstract_text = request.POST.get('abstract_text')
+        journal_title = request.POST.get('journal_title')
+        publication_type = request.POST.get('publication_type')
+        month = request.POST.get('month')
         
         # Validate the 'year' field
         try:
@@ -35,9 +43,18 @@ def save_paper(request):
             # Handle the case where 'year' is not a valid integer
             year = None  # Set a default value or None depending on your needs
 
-        # Create a new Main object and save it to the database
-        new_main = Main(title=title, doi=doi, year=year, pmid=pmid)
-        new_main.save()
+        # Create a new Paper object and save it to the database
+        new_paper = Paper(
+            title=title, 
+            doi=doi, 
+            year=year, 
+            pmid=pmid,
+            abstract_text=abstract_text,
+            journal_title=journal_title,
+            publication_type=publication_type,
+            month=month,
+        )
+        new_paper.save()
         
         # Return a JSON response
         return JsonResponse({'status': 'success'})
@@ -45,9 +62,9 @@ def save_paper(request):
     return JsonResponse({'status': 'error'}, status=400)
 
 def papers(request):
-    papers = Papers.objects.all()
+    papers = Paper.objects.all()
     return render(request, 'search/papers.html', {'papers': papers})
 
 def authors(request):
-    authors = Authors.objects.all()
+    authors = Author.objects.all()
     return render(request, 'search/authors.html', {'authors': authors})
