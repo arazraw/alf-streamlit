@@ -5,11 +5,33 @@
 {% block content %}
 <div class="container mt-4">
     <h1>Dashboard</h1>
-    
-    <h2>Papers per Year</h2>
-    <div>{{ chart_papers_div|safe }}</div>
 
-    <h2>Total Citations per Year</h2>
-    <div>{{ chart_citations_div|safe }}</div>
+    <div class="row">
+        <!-- Panel 1: Papers per Year -->
+        <div class="col-lg-6">
+            <h2>Papers per Year</h2>
+            <div>{{ chart_papers_div|safe }}</div>
+        </div>
+
+        <!-- Panel 2: Total Citations per Year -->
+        <div class="col-lg-6">
+            <h2>Total Citations per Year</h2>
+            <div>{{ chart_citations_div|safe }}</div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Panel 3: Placeholder for additional content -->
+        <div class="col-lg-6">
+            <h2>Panel 3</h2>
+            <div>Content for Panel 3 goes here.</div>
+        </div>
+
+        <!-- Panel 4: Placeholder for additional content -->
+        <div class="col-lg-6">
+            <h2>Panel 4</h2>
+            <div>Content for Panel 4 goes here.</div>
+        </div>
+    </div>
 </div>
 {% endblock %}
