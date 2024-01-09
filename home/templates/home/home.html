@@ -2,35 +2,109 @@
 {% block title %}Your Landing Page{% endblock %}
 
 {% block content %}
-<!-- Section 1 -->
-<section id="section1" class="py-5 text-center">
-    <div class="container">
-        <h1>Welcome to Your Landing Page</h1>
-        <p class="lead">This is Section 1. You can add your content here.</p>
-    </div>
-</section>
-
-<!-- Section 2 -->
-<section id="section2" class="py-5 text-center bg-light">
-    <div class="container">
-        <h2>Section 2</h2>
-        <p>More content for your landing page.</p>
-    </div>
-</section>
-
-<!-- Section 3 -->
-<section id="section3" class="py-5 text-center">
-    <div class="container">
-        <h2>Section 3</h2>
-        <p>Even more content goes here.</p>
-    </div>
-</section>
-
-<!-- Section 4 -->
-<section id="section4" class="py-5 text-center bg-light">
-    <div class="container">
-        <h2>Contact Us</h2>
-        <p>Contact information and a contact form can be placed here.</p>
-    </div>
-</section>
+<div class="pc-container">
+	<div class="pcoded-content">
+		<!-- [ Main Content ] start -->
+		<div class="row mb-3">
+				<div class="col-md-8">
+					<h3>Badges</h3>
+					<p class="lead">Documentation and examples for badges, our small count and labeling component.</p>
+					<p class="f-w-500">Check out <a href="http://html.phoenixcoded.net/nextro-new/docs/index-bc-package.html#page-badge" target="_blank" class="badge badge-light-primary">Documentation</a></p>
+				</div>
+		</div>
+		<div class="row">
+			<!-- [ badge ] start -->
+			<div class="col-sm-12">
+				<div class="card">
+					<div class="card-header">
+						<h5>Basic Badges</h5>
+					</div>
+					<div class="card-body">
+						<h1>Example heading <span class="badge badge-secondary">New</span></h1>
+						<h2>Example heading <span class="badge badge-secondary">New</span></h2>
+						<h3>Example heading <span class="badge badge-secondary">New</span></h3>
+						<h4>Example heading <span class="badge badge-secondary">New</span></h4>
+						<h5>Example heading <span class="badge badge-secondary">New</span></h5>
+						<h6>Example heading <span class="badge badge-secondary">New</span></h6>
+					</div>
+				</div>
+				<div class="card btn-page">
+					<div class="card-header">
+						<h5>Button Badges</h5>
+					</div>
+					<div class="card-body">
+						<button type="button" class="btn  btn-primary">primary <span class="badge badge-light">4</span></button>
+						<button type="button" class="btn  btn-secondary">secondary <span class="badge badge-light">4</span></button>
+						<button type="button" class="btn  btn-success">success <span class="badge badge-light">4</span></button>
+						<button type="button" class="btn  btn-danger">danger <span class="badge badge-light">4</span></button>
+						<button type="button" class="btn  btn-warning">warning <span class="badge badge-light">4</span></button>
+						<button type="button" class="btn  btn-info">info <span class="badge badge-light">4</span></button>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header">
+						<h5>Contextual Variations</h5>
+					</div>
+					<div class="card-body">
+						<span class="badge badge-primary">Primary</span>
+						<span class="badge badge-secondary">Secondary</span>
+						<span class="badge badge-success">Success</span>
+						<span class="badge badge-danger">Danger</span>
+						<span class="badge badge-warning">Warning</span>
+						<span class="badge badge-info">Info</span>
+						<span class="badge badge-light">Light</span>
+						<span class="badge badge-dark">Dark</span>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header">
+						<h5>Pill Badges</h5>
+					</div>
+					<div class="card-body">
+						<span class="badge badge-pill badge-primary">Primary</span>
+						<span class="badge badge-pill badge-secondary">Secondary</span>
+						<span class="badge badge-pill badge-success">Success</span>
+						<span class="badge badge-pill badge-danger">Danger</span>
+						<span class="badge badge-pill badge-warning">Warning</span>
+						<span class="badge badge-pill badge-info">Info</span>
+						<span class="badge badge-pill badge-light">Light</span>
+						<span class="badge badge-pill badge-dark">Dark</span>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header">
+						<h5>Links</h5>
+					</div>
+					<div class="card-body">
+						<a href="#!" class="badge badge-primary">Primary</a>
+						<a href="#!" class="badge badge-secondary">Secondary</a>
+						<a href="#!" class="badge badge-success">Success</a>
+						<a href="#!" class="badge badge-danger">Danger</a>
+						<a href="#!" class="badge badge-warning">Warning</a>
+						<a href="#!" class="badge badge-info">Info</a>
+						<a href="#!" class="badge badge-light">Light</a>
+						<a href="#!" class="badge badge-dark">Dark</a>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header">
+						<h5>Light variant</h5>
+					</div>
+					<div class="card-body">
+						<span class="badge badge-light-primary">Primary</span>
+						<span class="badge badge-light-secondary">Secondary</span>
+						<span class="badge badge-light-success">Success</span>
+						<span class="badge badge-light-danger">Danger</span>
+						<span class="badge badge-light-warning">Warning</span>
+						<span class="badge badge-light-info">Info</span>
+						<span class="badge badge-light-light">Light</span>
+						<span class="badge badge-light-dark">Dark</span>
+					</div>
+				</div>
+			</div>
+			<!-- [ badge ] end -->
+		</div>
+		<!-- [ Main Content ] end -->
+	</div>
+</div>
 {% endblock %}
