@@ -96,6 +96,46 @@
                                     data-feather="feather"></i></span><span class="pc-mtext">Sök</span></a>
                     </li>
                 </ul>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <!-- SVG Icon here -->
+            <img src="{% static 'logo.svg' %}" alt="Logo" style="height: 30px;">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'home' %}"><i data-feather="home"></i> Hem <span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'dashboard' %}"><i data-feather="bar-chart-2"></i> Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'search' %}"><i data-feather="search"></i> Sök</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'papers' %}"><i data-feather="file-text"></i> Artiklar</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'authors' %}"><i data-feather="users"></i> Författare</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main role="main" class="container-fluid pt-4">
+        <div class="row">
+            <div class="col-md-12"> <!-- Changed to full width -->
+                {% block content %}
+                <!-- This block will be overridden by child templates -->
+                {% endblock %}
             </div>
         </div>
     </nav>
@@ -178,6 +218,13 @@
 
     <!-- custom-chart js -->
     <script src="{% static 'js/pages/dashboard-sale.js' %}"></script>
+    </footer>
+    <!-- Include Feather Icons -->
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <!-- Initialize Feather Icons -->
+    <script>
+        feather.replace();
+    </script>
 </body>
 
 </html>

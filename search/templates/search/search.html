@@ -87,6 +87,87 @@
                 </table>
             </div>
         </div>
+    <!-- Search Form -->
+    <form method="post" action="{% url 'search' %}">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <input type="hidden" name="form_type" value="search">
+                <input type="text" class="form-control" name="term" placeholder="Search Term" required>
+            </div>
+            <div class="form-group col-md-2">
+                <input type="number" class="form-control" name="total_articles" placeholder="Total Articles" value="200"
+                    min="100">
+            </div>
+            <div class="form-group col-md-3">
+                <input type="date" class="form-control" name="mindate" placeholder="Min Date" value="2023-09-01"
+                    required>
+            </div>
+            <div class="form-group col-md-3">
+                <input type="date" class="form-control" name="maxdate" placeholder="Max Date" value="2024-01-01"
+                    required>
+            </div>
+            <div class="form-group col-md-12">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Table for displaying search results -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <!-- Table headers -->
+            <thead class="thead-light">
+                <tr>
+                    <th>Title</th>
+                    <th>PMID</th>
+                    <th>DOI</th>
+                    <th>Journal Title</th>
+                    <th>Year</th>
+                    <th>Affiliations</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <!-- Table body -->
+            <tbody>
+                {% for record in data %}
+                <tr {% if record.saved %}class="table-success" {% endif %}>
+                    <td>{{ record.Title }}</td>
+                    <td>{{ record.PMID }}</td>
+                    <td>{{ record.DOI }}</td>
+                    <td>{{ record.JournalTitle }}</td>
+                    <td>{{ record.Year }}</td>
+                    <td>{{ record.Affiliations }}</td>
+                    <td>
+                        <!-- Save Paper Form -->
+                        <form method="post" action="{% url 'save_paper' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="form_type" value="save_paper">
+                            <input type="hidden" name="title" value="{{ record.Title }}">
+                            <input type="hidden" name="doi" value="{{ record.DOI }}">
+                            <input type="hidden" name="year" value="{{ record.Year }}">
+                            <input type="hidden" name="pmid" value="{{ record.PMID }}">
+                            <input type="hidden" name="abstract_text" value="{{ record.AbstractText }}">
+                            <input type="hidden" name="journal_title" value="{{ record.JournalTitle }}">
+                            <input type="hidden" name="publication_type" value="{{ record.PublicationType }}">
+                            <input type="hidden" name="month" value="{{ record.Month }}">
+                            <button type="button" class="btn btn-primary save-btn" data-title="{{ record.Title }}"
+                                data-doi="{{ record.DOI }}"
+                                data-year="{{ record.Year }}"
+                                data-pmid="{{ record.PMID }}"
+                                data-abstract_text="{{ record.AbstractText }}"
+                                data-journal_title="{{ record.JournalTitle }}"
+                                data-publication_type="{{ record.PublicationType }}"
+                                data-month="{{ record.Month }}"
+                                {% if record.saved %} disabled{% endif %}>
+                                {% if record.saved %}Tillagd{% else %}Spara{% endif %}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </section>
 
