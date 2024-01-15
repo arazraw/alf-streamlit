@@ -1,7 +1,7 @@
 from django.db import models
 
 class Paper(models.Model):
-    doi = models.CharField(max_length=100, primary_key=True)
+    doi = models.CharField(max_length=100, primary_key=True, db_index=True)
     pmid = models.CharField(max_length=100)
     title = models.CharField(max_length=200)
     topic = models.CharField(max_length=100) # From Semantic Scholar
@@ -23,15 +23,21 @@ class Paper(models.Model):
     
 
 class Author(models.Model):
-    id = models.AutoField(primary_key=True) # the unique id in this specific Model
-    paper = models.ForeignKey(Paper, on_delete=models.CASCADE)
+    id = models.AutoField(primary_key=True)
+    paper = models.ForeignKey(Paper, on_delete=models.CASCADE, db_index=True)
     name = models.CharField(max_length=100)
     orcid_id = models.CharField(max_length=100, blank=True, null=True)  # Optional ORCID ID
     affiliation = models.CharField(max_length=200)
-    citations = models.IntegerField(default=0) # From Semantic Scholar
-    influential_citations = models.IntegerField(default=0) # From Semantic Scholar
-    h_index = models.IntegerField(default=0)
     email = models.EmailField(blank=True, null=True)  # Optional Email
 
     def __str__(self):
         return self.name
+
+
+class Impact(models.Model):
+    paper = models.OneToOneField(Paper, on_delete=models.CASCADE, primary_key=True)
+    citations = models.IntegerField(default=0)
+    impactful_citations = models.IntegerField(default=0)
+    meaningful = models.BooleanField(default=False)
+    citation_data = models.JSONField(default=dict, null=False)
+    last_updated = models.DateTimeField(auto_now=True) 
