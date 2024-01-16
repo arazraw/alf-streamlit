@@ -30,6 +30,15 @@ def search(request):
 
 @require_POST
 def save_paper(request):
+    print(request.POST.get('form_type'))
+    print(request.POST.get('title'))
+    print(request.POST.get('doi'))
+    print(request.POST.get('year'))
+    print(request.POST.get('pmid'))
+    print(request.POST.get('abstract_text'))
+    print(request.POST.get('journal_title'))
+    print(request.POST.get('publication_type'))
+    print(request.POST.get('month'))
     if request.POST.get('form_type') == 'save_paper':
         title = request.POST.get('title')
         doi = request.POST.get('doi')
@@ -63,7 +72,7 @@ def save_paper(request):
         # Return a JSON response
         return JsonResponse({'status': 'success'})
 
-    return JsonResponse({'status': 'error'}, status=400)
+    return JsonResponse({'status': 'error form type error'}, status=400)
 
 def dashboard(request):
     # Handle the form submission

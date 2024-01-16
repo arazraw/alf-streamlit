@@ -71,10 +71,20 @@
                                 <!-- Save Paper Form -->
                                 <form method="post" action="{% url 'save_paper' %}">
                                     {% csrf_token %}
-                                    <!-- ... (your form input fields) ... -->
-                                    <button type="button" class="btn btn-primary save-btn"
-                                        data-title="{{ record.Title }}" data-doi="{{ record.DOI }}"
-                                        data-year="{{ record.Year }}" data-pmid="{{ record.PMID }}"
+                                    <input type="hidden" name="form_type" value="save_paper">
+                                    <input type="hidden" name="title" value="{{ record.Title }}">
+                                    <input type="hidden" name="doi" value="{{ record.DOI }}">
+                                    <input type="hidden" name="year" value="{{ record.Year }}">
+                                    <input type="hidden" name="pmid" value="{{ record.PMID }}">
+                                    <input type="hidden" name="abstract_text" value="{{ record.AbstractText }}">
+                                    <input type="hidden" name="journal_title" value="{{ record.JournalTitle }}">
+                                    <input type="hidden" name="publication_type" value="{{ record.PublicationType }}">
+                                    <input type="hidden" name="month" value="{{ record.Month }}">
+                                    <button type="submit" class="btn btn-primary save-btn"
+                                        data-title="{{ record.Title }}"
+                                        data-doi="{{ record.DOI }}"
+                                        data-year="{{ record.Year }}"
+                                        data-pmid="{{ record.PMID }}"
                                         data-abstract_text="{{ record.AbstractText }}"
                                         data-journal_title="{{ record.JournalTitle }}"
                                         data-publication_type="{{ record.PublicationType }}"
@@ -104,6 +114,8 @@
     $(document).ready(function () {
         $('.save-btn').click(function () {
             var btn = $(this); // The save button that was clicked
+            console.log('Title:', btn.data('title'));
+            console.log('DOI:', btn.data('doi'));
             var data = {
                 'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val(),
                 'title': btn.data('title'),
