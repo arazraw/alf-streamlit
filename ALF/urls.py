@@ -7,5 +7,5 @@ from django.views.generic import RedirectView
 urlpatterns = [
     path('', RedirectView.as_view(url='/home/', permanent=True)),
     path('admin/', admin.site.urls),
-    path('', include('search.urls')),  # Search app
+    path('', include('vetu.urls')),  # vetu app
 ]
