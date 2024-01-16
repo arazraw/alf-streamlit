@@ -33,43 +33,45 @@
             </form>
 
             <!-- Table for displaying search results -->
+            <style>
+                .truncate-15-char {
+                    max-width: 15ch; /* Limit DOI to 15 characters */
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            
+                .truncate-50-char {
+                    max-width: 50ch; /* Limit Title and Affiliations to 50 characters */
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            </style>
+            
             <div class="table-responsive">
                 <table class="table table-bordered table-striped">
                     <!-- Table headers -->
                     <thead class="thead-light">
                         <tr>
-                            <th>Title</th>
-                            <th>PMID</th>
-                            <th>DOI</th>
-                            <th>Journal Title</th>
-                            <th>Year</th>
-                            <th>Affiliations</th>
                             <th>Actions</th>
+                            <th class="truncate-50-char">Title</th>
+                            <th>PMID</th>
+                            <th class="truncate-15-char">DOI</th>
+                            <th class="truncate-50-char">Journal Title</th>
+                            <th>Year</th>
+                            <th class="truncate-50-char">Affiliations</th>                            
                         </tr>
                     </thead>
                     <!-- Table body -->
                     <tbody>
                         {% for record in data %}
                         <tr {% if record.saved %}class="table-success" {% endif %}>
-                            <td>{{ record.Title }}</td>
-                            <td>{{ record.PMID }}</td>
-                            <td>{{ record.DOI }}</td>
-                            <td>{{ record.JournalTitle }}</td>
-                            <td>{{ record.Year }}</td>
-                            <td>{{ record.Affiliations }}</td>
                             <td>
                                 <!-- Save Paper Form -->
                                 <form method="post" action="{% url 'save_paper' %}">
                                     {% csrf_token %}
-                                    <input type="hidden" name="form_type" value="save_paper">
-                                    <input type="hidden" name="title" value="{{ record.Title }}">
-                                    <input type="hidden" name="doi" value="{{ record.DOI }}">
-                                    <input type="hidden" name="year" value="{{ record.Year }}">
-                                    <input type="hidden" name="pmid" value="{{ record.PMID }}">
-                                    <input type="hidden" name="abstract_text" value="{{ record.AbstractText }}">
-                                    <input type="hidden" name="journal_title" value="{{ record.JournalTitle }}">
-                                    <input type="hidden" name="publication_type" value="{{ record.PublicationType }}">
-                                    <input type="hidden" name="month" value="{{ record.Month }}">
+                                    <!-- ... (your form input fields) ... -->
                                     <button type="button" class="btn btn-primary save-btn"
                                         data-title="{{ record.Title }}" data-doi="{{ record.DOI }}"
                                         data-year="{{ record.Year }}" data-pmid="{{ record.PMID }}"
@@ -81,6 +83,12 @@
                                     </button>
                                 </form>
                             </td>
+                            <td class="truncate-50-char">{{ record.Title }}</td>
+                            <td>{{ record.PMID }}</td>
+                            <td class="truncate-15-char">{{ record.DOI }}</td>
+                            <td class="truncate-50-char">{{ record.JournalTitle }}</td>
+                            <td>{{ record.Year }}</td>
+                            <td class="truncate-50-char">{{ record.Affiliations }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>

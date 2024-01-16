@@ -4,7 +4,7 @@
 <html lang="en">
 
 <head>
-    <title>Nextro Able Bootstrap 4 Admin Template</title>
+    <title>BiblioGraphics</title>
     <!-- HTML5 Shim and Respond.js IE11 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 11]>
@@ -44,7 +44,7 @@
     <!-- [ Mobile header ] start -->
     <div class="pc-mob-header pc-header">
         <div class="pcm-logo">
-            <img src="assets/images/logo.svg" alt="" class="logo logo-lg">
+            <img src="{% static 'images/logo.svg' %}" alt="" class="logo logo-lg">
         </div>
         <div class="pcm-toolbar">
             <a href="#!" class="pc-head-link" id="mobile-collapse">
@@ -71,8 +71,8 @@
             <div class="m-header">
                 <a href="index.html" class="b-brand">
                     <!-- ========   change your logo hear   ============ -->
-                    <img src="assets/images/logo.svg" alt="" class="logo logo-lg">
-                    <img src="assets/images/logo-sm.svg" alt="" class="logo logo-sm">
+                    <img src="{% static 'images/logo.svg' %}" alt="" class="logo logo-lg">
+                    <img src="{% static 'images/logo-sm.svg' %}" alt="" class="logo logo-sm">
                 </a>
             </div>
             <div class="navbar-content">
@@ -86,11 +86,11 @@
                     </li>
                     <li class="pc-item">
                         <a href="{% url 'dashboard' %}" class="pc-link "><span class="pc-micon"><i
-                                    data-feather="home"></i></span><span class="pc-mtext">Dashboard</span></a>
+                                    data-feather="home"></i></span><span class="pc-mtext">BiblioGraphics</span></a>
                     </li>
                     <li class="pc-item pc-hasmenu">
                         <a href="#" class="pc-link "><span class="pc-micon"><i data-feather="box"></i></span><span
-                                class="pc-mtext">Vetenskapen</span><span class="pc-arrow"><i
+                                class="pc-mtext">BiblioMetrics</span><span class="pc-arrow"><i
                                     data-feather="chevron-right"></i></span></a>
                         <ul class="pc-submenu">
                             <li class="pc-item"><a class="pc-link" href="{% url 'search' %}">Sök artiklar</a></li>
@@ -191,9 +191,9 @@
                     <li class="dropdown pc-h-item">
                         <a class="pc-head-link dropdown-toggle arrow-none mr-0" data-toggle="dropdown" href="#"
                             role="button" aria-haspopup="false" aria-expanded="false">
-                            <img src="assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
+                            <img src="{% static 'images/user/avatar-2.jpg' %}" alt="user-image" class="user-avtar">
                             <span>
-                                <span class="user-name">Joseph William</span>
+                                <span class="user-name">Lukas Hilgendorf</span>
                                 <span class="user-desc">Administrator</span>
                             </span>
                         </a>
@@ -229,8 +229,7 @@
         </div>
     </header>
     <!-- [ Header ] end -->
-    {% block content %}
-    {% endblock %}
+
     <!-- [ Main Content ] end -->
     <script src="{% static 'js/vendor-all.min.js' %}"></script>
     <script src="{% static 'js/plugins/bootstrap.min.js' %}"></script>
@@ -239,12 +238,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
     <script src="{% static 'js/plugins/clipboard.min.js' %}"></script>
     <script src="{% static 'js/uikit.min.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
 
     <!-- Apex Chart -->
     <script src="{% static 'js/plugins/apexcharts.min.js' %}"></script>
 
     <!-- custom-chart js -->
     <script src="{% static 'js/pages/dashboard-sale.js' %}"></script>
+
+    {% block content %}
+    {% endblock %}
+
 </body>
 
 </html>

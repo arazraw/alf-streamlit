@@ -12,11 +12,11 @@
                         <th>ID</th>
                         <th>Name</th>
                         <th>ORCID ID</th>
-                        <th>Affiliation</th>
                         <th>Citations</th>
                         <th>Influential Citations</th>
                         <th>H-Index</th>
                         <th>Email</th>
+                        <th>Affiliation</th>                        
                     </tr>
                 </thead>
                 <tbody>
@@ -26,11 +26,11 @@
                         <td>{{ author.id }}</td>
                         <td>{{ author.name }}</td>
                         <td>{{ author.orcid_id }}</td>
-                        <td>{{ author.affiliation }}</td>
                         <td>{{ author.citations }}</td>
                         <td>{{ author.influential_citations }}</td>
                         <td>{{ author.h_index }}</td>
                         <td>{{ author.email }}</td>
+                        <td>{{ author.affiliation }}</td>
                     </tr>
                     {% empty %}
                     <tr>
@@ -50,11 +50,11 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>ORCID ID</th>
-                <th>Affiliation</th>
                 <th>Citations</th>
                 <th>Influential Citations</th>
                 <th>H-Index</th>
                 <th>Email</th>
+                <th>Affiliation</th>
             </tr>
         </thead>
         <tbody>
@@ -64,11 +64,11 @@
                 <td>{{ author.id }}</td>
                 <td>{{ author.name }}</td>
                 <td>{{ author.orcid_id }}</td>
-                <td>{{ author.affiliation }}</td>
                 <td>{{ author.citations }}</td>
                 <td>{{ author.influential_citations }}</td>
                 <td>{{ author.h_index }}</td>
                 <td>{{ author.email }}</td>
+                <td>{{ author.affiliation }}</td>
             </tr>
         {% empty %}
             <tr>
