@@ -5,9 +5,7 @@ from django.views.generic import RedirectView
 
 
 urlpatterns = [
-    path('', RedirectView.as_view(url='/home/', permanent=True)),  # Redirect root to home app
+    path('', RedirectView.as_view(url='/home/', permanent=True)),
     path('admin/', admin.site.urls),
-    path('home/', include('home.urls')),         # Home app
-    path('dashboard/', include('dashboard.urls')),  # Dashboard app
-    path('search/', include('search.urls')),  # Search app
+    path('', include('vetu.urls')),  # vetu app
 ]
