@@ -11,6 +11,7 @@ class Command(BaseCommand):
             affiliations = paper.affiliations.lower()
 
             # Check for specific strings in the affiliations field
+            # When adding fields to this and wishing to rerun over all in Paper there is a command called reset_affil_check
             paper.akademisk = any(keyword in affiliations for keyword in ['akademisk', 'akademi', 'university'])
             paper.region = any(keyword in affiliations for keyword in ['region'])
             paper.got_un = any(keyword in affiliations for keyword in ['university of gothenburg', 'gothenburg university', 'göteborgs universitet'])
