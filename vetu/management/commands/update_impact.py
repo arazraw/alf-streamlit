@@ -17,7 +17,7 @@ class Command(BaseCommand):
             response = requests.post(
                 'https://api.semanticscholar.org/graph/v1/paper/batch',
                 headers=headers,
-                params={'fields': 'citationCount,influentialCitationCount,citations'},  # Adjust the fields as needed
+                params={'fields': 'citationCount,influentialCitationCount,citations'},
                 json={'ids': [f"DOI:{doi}" for doi in dois]}
             )
 
