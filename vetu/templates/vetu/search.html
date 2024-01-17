@@ -80,6 +80,7 @@
                                     <input type="hidden" name="journal_title" value="{{ record.JournalTitle }}">
                                     <input type="hidden" name="publication_type" value="{{ record.PublicationType }}">
                                     <input type="hidden" name="month" value="{{ record.Month }}">
+                                    <input type="hidden" name="affiliations" value="{{ record.Affiliations }}">
                                     <button type="submit" class="btn btn-primary save-btn"
                                         data-title="{{ record.Title }}"
                                         data-doi="{{ record.DOI }}"
@@ -126,6 +127,7 @@
                 'journal_title': btn.data('journal_title'),
                 'publication_type': btn.data('publication_type'),
                 'month': btn.data('month'),
+                'affiliations': btn.data('affiliations'),
                 'form_type': 'save_paper'
             };
 

@@ -10,6 +10,7 @@ class Paper(models.Model):
     journal_title = models.CharField(max_length=200)  # Journal title from PubMed XML
     year = models.IntegerField()  # Publication year from PubMed XML
     month = models.CharField(max_length=20)  # Publication month from PubMed XML
+    affiliations =  models.TextField()
     citations = models.IntegerField(default=0) # From Semantic Scholar
     influential_citations = models.IntegerField(default=0) # From Semantic Scholar
     basic_science = models.BooleanField(default=False)  # Denotes a basic science paper
@@ -17,6 +18,16 @@ class Paper(models.Model):
     machine = models.BooleanField(default=False)  # Denotes a machine learning or AI study
     observational = models.BooleanField(default=False)  # Denotes an observational study
     guideline = models.BooleanField(default=False)  # Denotes if it is cited by guidelines
+    akademisk = models.BooleanField(default=False)
+    region = models.BooleanField(default=False)
+    got_un = models.BooleanField(default=False)
+    kar_in = models.BooleanField(default=False)
+    lun_un = models.BooleanField(default=False)
+    ume_un = models.BooleanField(default=False)
+    upp_un = models.BooleanField(default=False)
+    lin_un = models.BooleanField(default=False)
+    ore_un = models.BooleanField(default=False)
+    affiliations_checked =  models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
