@@ -48,6 +48,7 @@ def save_paper(request):
         journal_title = request.POST.get('journal_title')
         publication_type = request.POST.get('publication_type')
         month = request.POST.get('month')
+        affiliations = request.POST.get('affiliations')
         
         # Validate the 'year' field
         try:
@@ -66,6 +67,7 @@ def save_paper(request):
             journal_title=journal_title,
             publication_type=publication_type,
             month=month,
+            affiliations=affiliations,
         )
         new_paper.save()
 
