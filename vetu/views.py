@@ -93,19 +93,21 @@ def dashboard(request):
         form = PaperFilterForm()
         papers = Paper.objects.all()
 
-    # Calculate the total number of papers and total citations
-    paper_count = papers.count()
-    total_citations = papers.aggregate(total_citations=Sum('citations'))['total_citations']
+    # Get citation data from the Impact model
+    citation_data = Impact.objects.filter(paper__in=papers)
+    total_citations = citation_data.aggregate(total_citations=Sum('citations'))['total_citations']
+
+    distinct_papers_count = papers.distinct().count()
 
     # Query for the number of papers per year
-    papers_per_year_data = papers.values('year').annotate(paper_count=Count('year')).order_by('year')
+    papers_per_year_data = papers.values('year').annotate(distinct_papers_count=Count('year')).order_by('year')
     # Query for the total number of citations per year
-    citations_per_year_data = papers.values('year').annotate(total_citations=Sum('citations')).order_by('year')
+    citations_per_year_data = citation_data.values('paper__year').annotate(total_citations=Sum('citations')).order_by('paper__year')
 
     # Papers per Year Chart
     if papers_per_year_data:
         df_papers = pd.DataFrame.from_records(papers_per_year_data)
-        fig_papers = px.bar(df_papers, x='year', y='paper_count', labels={'paper_count': 'Number of Papers'}, title='Number of Papers per Year')
+        fig_papers = px.bar(df_papers, x='year', y='distinct_papers_count', labels={'distinct_papers_count': 'Number of Papers'}, title='Number of Papers per Year')
         chart_papers_div = fig_papers.to_html(full_html=False, default_height=500, default_width=800)
     else:
         chart_papers_div = 'No data available for papers per year'
@@ -113,7 +115,7 @@ def dashboard(request):
     # Citations per Year Chart
     if citations_per_year_data:
         df_citations = pd.DataFrame.from_records(citations_per_year_data)
-        fig_citations = px.bar(df_citations, x='year', y='total_citations', labels={'total_citations': 'Total Citations'}, title='Total Citations per Year')
+        fig_citations = px.bar(df_citations, x='paper__year', y='total_citations', labels={'total_citations': 'Total Citations'}, title='Total Citations per Year')
         chart_citations_div = fig_citations.to_html(full_html=False, default_height=500, default_width=800)
     else:
         chart_citations_div = 'No data available for citations per year'
@@ -122,7 +124,7 @@ def dashboard(request):
         'form': form,
         'chart_papers_div': chart_papers_div,
         'chart_citations_div': chart_citations_div,
-        'paper_count': paper_count,
+        'paper_count': distinct_papers_count,
         'total_citations': total_citations
     }
 
