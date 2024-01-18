@@ -14,6 +14,7 @@ Added folder "SwePub" with all medical reserach articles from 1980 to 2024 in Sw
 
 ## Commands we created
 - The view "Papers" will be updated every time we run the command "python manage.py update_papers.py". This command script will loop through all doi in Main and check if they exist in Papers, otherwise it will fetch the records from PubMed using the functions created in /search/views.py.
-- We should be able to do this also for the Authors table?
+- There are now multiple commands, there are those to update_authors, update_impact, fill_affiliations also does binary checks for certain types of affiliations.
+- In pipeline(see dev branch) there are several more which get, proccess and load data from swepub, PubMed and semantic schloar
 
 
