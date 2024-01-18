@@ -4,6 +4,7 @@ from vetu.models import Paper, Author
 from Bio import Entrez
 
 def fetch_authors_and_affiliations(doi):
+    print(f"Fetching data for DOI: {doi}")
     handle = Entrez.esearch(db="pubmed", term=doi)
     record = Entrez.read(handle)
     handle.close()
@@ -44,6 +45,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for paper in Paper.objects.all():
+            if not paper.doi:
+                print(f"Invalid DOI for paper {paper.title}")
+                continue
             # Fetch authors and their affiliations for this DOI
             data = fetch_authors_and_affiliations(paper.doi)
 

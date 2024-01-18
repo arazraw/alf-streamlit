@@ -7,7 +7,7 @@ import time
 class Command(BaseCommand):
     help = 'Update or create Impact instances for each paper based on Semantic Scholar data'
 
-    BATCH_SIZE = 100
+    BATCH_SIZE = 500
 
     def fetch_paper_data_batch(self, dois):
         api_key = 'n2iOAd5EUfimLMgOcd4B5t5wtnYLlsg9fuga7oCi'
@@ -35,23 +35,26 @@ class Command(BaseCommand):
 
     def create_or_update_impact_instances_batch(self, papers, data_batch):
         for paper, data in zip(papers, data_batch):
-            try:
-                impact_instance = Impact.objects.get(paper=paper)
-                impact_instance.citations = data.get('citationCount', 0)
-                impact_instance.impactful_citations = data.get('influentialCitationCount', 0)
-                impact_instance.meaningful = False
-                impact_instance.citation_data = data.get('citations', [])
-                impact_instance.last_updated = datetime.now()
-                impact_instance.save()
-            except Impact.DoesNotExist:
-                Impact.objects.create(
-                    paper=paper,
-                    citations=data.get('citationCount', 0),
-                    impactful_citations=data.get('influentialCitationCount', 0),
-                    meaningful=False,
-                    citation_data=data.get('citations', []),
-                    last_updated=datetime.now()
-                )
+            if data is not None:
+                try:
+                    impact_instance = Impact.objects.get(paper=paper)
+                    impact_instance.citations = data.get('citationCount', 0)
+                    impact_instance.impactful_citations = data.get('influentialCitationCount', 0)
+                    impact_instance.meaningful = False
+                    impact_instance.citation_data = data.get('citations', [])
+                    impact_instance.last_updated = datetime.now()
+                    impact_instance.save()
+                except Impact.DoesNotExist:
+                    Impact.objects.create(
+                        paper=paper,
+                        citations=data.get('citationCount', 0),
+                        impactful_citations=data.get('influentialCitationCount', 0),
+                        meaningful=False,
+                        citation_data=data.get('citations', []),
+                        last_updated=datetime.now()
+                    )
+            else:
+                self.stdout.write(self.style.WARNING(f'No data returned for DOI: {paper.doi}'))
 
     def handle(self, *args, **options):
         papers = list(Paper.objects.exclude(doi__isnull=True).exclude(doi__exact='').exclude(doi__iexact='None'))

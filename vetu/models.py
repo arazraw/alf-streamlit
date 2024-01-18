@@ -8,7 +8,7 @@ class Paper(models.Model):
     abstract_text = models.TextField()  # Full abstract from PubMed XML
     publication_type = models.CharField(max_length=200)  # Publication type from PubMed XML
     journal_title = models.CharField(max_length=200)  # Journal title from PubMed XML
-    year = models.IntegerField()  # Publication year from PubMed XML
+    year = models.IntegerField(null=True, blank=True, default=None)  # Publication year from PubMed XML
     month = models.CharField(max_length=20)  # Publication month from PubMed XML
     affiliations =  models.TextField()
     citations = models.IntegerField(default=0) # From Semantic Scholar
