@@ -9,6 +9,7 @@ class Command(BaseCommand):
 
     BATCH_SIZE = 500
 
+
     def fetch_paper_data_batch(self, dois):
         api_key = 'n2iOAd5EUfimLMgOcd4B5t5wtnYLlsg9fuga7oCi'
         headers = {'X-API-KEY': api_key}
@@ -53,26 +54,47 @@ class Command(BaseCommand):
                         citation_data=data.get('citations', []),
                         last_updated=datetime.now()
                     )
-            else:
-                self.stdout.write(self.style.WARNING(f'No data returned for DOI: {paper.doi}'))
+            # else:
+                # self.stdout.write(self.style.WARNING(f'No data returned for DOI: {paper.doi}'))
 
     def handle(self, *args, **options):
         papers = list(Paper.objects.exclude(doi__isnull=True).exclude(doi__exact='').exclude(doi__iexact='None'))
         total_papers = len(papers)
 
+
+        completed_items = 0
+
         for i in range(0, total_papers, self.BATCH_SIZE):
+
+
+            progress_percentage = (completed_items / total_papers) * 100
+            self.stdout.write(f'\rProgress: {completed_items} out of {total_papers} complete - {progress_percentage:.2f}%', ending='')
+            self.stdout.flush()
+
+
             papers_batch = papers[i:i + self.BATCH_SIZE]
             dois_batch = [paper.doi for paper in papers_batch]
             data_batch = self.fetch_paper_data_batch(dois_batch)
 
             self.create_or_update_impact_instances_batch(papers_batch, data_batch)
 
-            for paper, data in zip(papers_batch, data_batch):
-                if data:
-                    self.stdout.write(self.style.SUCCESS(f'Successfully updated DOI: {paper.doi}'))
-                else:
-                    self.stdout.write(self.style.WARNING(f'No data returned for DOI: {paper.doi}'))
+            # for paper, data in zip(papers_batch, data_batch):
+            #     if data:
+            #         self.stdout.write(self.style.SUCCESS(f'Successfully updated DOI: {paper.doi}'))
+            #     else:
+            #         self.stdout.write(self.style.WARNING(f'No data returned for DOI: {paper.doi}'))
+            
+            # Update the progress
+
+            completed_items += self.BATCH_SIZE
+
+
+            # Increment the completed items
 
             time.sleep(4)
 
-        self.stdout.write(self.style.SUCCESS('Successfully created or updated impact instances'))
+        progress_percentage = 100
+        self.stdout.write(f'\rProgress: {progress_percentage:.2f}% complete', ending='')
+        self.stdout.flush()
+
+        self.stdout.write(self.style.SUCCESS('\nSuccessfully created or updated impact instances'))

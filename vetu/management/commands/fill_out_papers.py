@@ -13,7 +13,7 @@ def fetch_paper_information(identifier, identifier_type):
 
             id_list = record.get("IdList", [])
             if not id_list:
-                print(f"No articles found for {identifier_type} '{identifier}'.")
+                # print(f"No articles found for {identifier_type} '{identifier}'.")
                 return None
 
             handle = Entrez.efetch(db="pubmed", id=id_list[0], rettype="medline", retmode="xml")
@@ -32,7 +32,7 @@ def fetch_paper_information(identifier, identifier_type):
 
             id_list = record.get("IdList", [])
             if not id_list:
-                print(f"No articles found for {identifier_type} '{identifier}'.")
+                # print(f"No articles found for {identifier_type} '{identifier}'.")
                 return None
 
             handle = Entrez.efetch(db="pubmed", id=id_list[0], rettype="medline", retmode="xml")
@@ -96,9 +96,18 @@ class Command(BaseCommand):
     help = 'Fetch additional information for each DOI in the Paper table'
 
     def handle(self, *args, **options):
-        for paper in Paper.objects.filter(title=''):
+        total_papers = Paper.objects.filter(paper_fill=False).count()
+        processed_papers = 0
 
-            self.stdout.write(self.style.NOTICE(f'Requesting PubMed for Id {paper.doi} {paper.pmid}'))
+        self.stdout.write(f'\rProcessed {processed_papers} out of {total_papers} papers', ending='')
+        self.stdout.flush()
+
+        for paper in Paper.objects.filter(paper_fill=False):
+
+            # Update the progress
+            
+
+            # self.stdout.write(self.style.NOTICE(f'Requesting PubMed for Id {paper.doi} {paper.pmid}'))
             # Fetch additional information for this DOI
             if paper.doi:
                 data = fetch_paper_information(paper.doi, 'DOI')
@@ -117,8 +126,16 @@ class Command(BaseCommand):
                 paper.affiliations = data['Affiliations']
                 paper.doi = data['DOI']
                 paper.pmid = data['PMID']
+                paper.paper_fill = True
                 # Update more fields as needed
                 paper.save()
 
+            processed_papers += 1
 
-        self.stdout.write(self.style.SUCCESS('Successfully updated Paper objects'))
+            self.stdout.write(f'\rProcessed {processed_papers} out of {total_papers} papers. Now processing DOI: {paper.doi} PMID: {paper.pmid}', ending='')
+            self.stdout.flush()
+
+            
+
+
+        self.stdout.write(self.style.SUCCESS('\nSuccessfully updated Paper objects'))
