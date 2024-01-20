@@ -8,7 +8,7 @@ class Paper(models.Model):
     abstract_text = models.TextField()  # Full abstract from PubMed XML
     publication_type = models.CharField(max_length=200)  # Publication type from PubMed XML
     journal_title = models.CharField(max_length=200)  # Journal title from PubMed XML
-    year = models.IntegerField()  # Publication year from PubMed XML
+    year = models.IntegerField(null=True, blank=True, default=None)  # Publication year from PubMed XML
     month = models.CharField(max_length=20)  # Publication month from PubMed XML
     affiliations =  models.TextField()
     citations = models.IntegerField(default=0) # From Semantic Scholar
@@ -28,6 +28,8 @@ class Paper(models.Model):
     lin_un = models.BooleanField(default=False)
     ore_un = models.BooleanField(default=False)
     affiliations_checked =  models.BooleanField(default=False)
+    paper_fill = models.BooleanField(default=False)
+    authors_checked = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
@@ -52,3 +54,16 @@ class Impact(models.Model):
     meaningful = models.BooleanField(default=False)
     citation_data = models.JSONField(default=dict, null=False)
     last_updated = models.DateTimeField(auto_now=True) 
+
+
+class AuthorImpact(models.Model):
+    name = models.CharField(max_length=255)
+    s2_id = models.CharField(max_length=20)
+    orcid = models.CharField(max_length=20)
+    paper_count = models.IntegerField(default=0)
+    citations = models.IntegerField(default=0)
+    impactful_citations = models.IntegerField(default=0)
+    h_index = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.Name

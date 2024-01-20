@@ -7,7 +7,10 @@ import time
 class Command(BaseCommand):
     help = 'Update or create Impact instances for each paper based on Semantic Scholar data'
 
-    def fetch_paper_data(self, doi):
+    BATCH_SIZE = 500
+
+
+    def fetch_paper_data_batch(self, dois):
         api_key = 'n2iOAd5EUfimLMgOcd4B5t5wtnYLlsg9fuga7oCi'
         headers = {'X-API-KEY': api_key}
 
@@ -15,51 +18,83 @@ class Command(BaseCommand):
             response = requests.post(
                 'https://api.semanticscholar.org/graph/v1/paper/batch',
                 headers=headers,
-                params={'fields': 'citationCount,influentialCitationCount,citations'},  # Adjust the fields as needed
-                json={'ids': [f"DOI:{doi}"]}
+                params={'fields': 'citationCount,influentialCitationCount,citations'},
+                json={'ids': [f"DOI:{doi}" for doi in dois]}
             )
 
             response.raise_for_status()
 
             response_data = response.json()
             if isinstance(response_data, list) and response_data:
-                return response_data[0]
+                return response_data
             else:
-                self.stdout.write(self.style.WARNING(f'Unexpected API response for DOI {doi}: {response_data}'))
+                self.stdout.write(self.style.WARNING(f'Unexpected API response for batch: {response_data}'))
         except requests.exceptions.RequestException as err:
-            self.stdout.write(self.style.ERROR(f'Failed to fetch data for DOI: {doi}. Error: {err}'))
+            self.stdout.write(self.style.ERROR(f'Failed to fetch data for batch. Error: {err}'))
 
-        return None
+        return []
 
-    def create_or_update_impact_instance(self, paper, data):
-        try:
-            impact_instance = Impact.objects.get(paper=paper)
-            impact_instance.citations = data.get('citationCount', 0)
-            impact_instance.impactful_citations = data.get('influentialCitationCount', 0)
-            impact_instance.meaningful = False
-            impact_instance.citation_data = data.get('citations', [])
-            impact_instance.last_updated = datetime.now()  # Add the last_updated field
-            impact_instance.save()
-        except Impact.DoesNotExist:
-            Impact.objects.create(
-                paper=paper,
-                citations=data.get('citationCount', 0),
-                impactful_citations=data.get('influentialCitationCount', 0),
-                meaningful=False,
-                citation_data=data.get('citations', []),
-                last_updated=datetime.now()  # Add the last_updated field
-            )
+    def create_or_update_impact_instances_batch(self, papers, data_batch):
+        for paper, data in zip(papers, data_batch):
+            if data is not None:
+                try:
+                    impact_instance = Impact.objects.get(paper=paper)
+                    impact_instance.citations = data.get('citationCount', 0)
+                    impact_instance.impactful_citations = data.get('influentialCitationCount', 0)
+                    impact_instance.meaningful = False
+                    impact_instance.citation_data = data.get('citations', [])
+                    impact_instance.last_updated = datetime.now()
+                    impact_instance.save()
+                except Impact.DoesNotExist:
+                    Impact.objects.create(
+                        paper=paper,
+                        citations=data.get('citationCount', 0),
+                        impactful_citations=data.get('influentialCitationCount', 0),
+                        meaningful=False,
+                        citation_data=data.get('citations', []),
+                        last_updated=datetime.now()
+                    )
+            # else:
+                # self.stdout.write(self.style.WARNING(f'No data returned for DOI: {paper.doi}'))
 
     def handle(self, *args, **options):
-        for paper in Paper.objects.exclude(doi__isnull=True).exclude(doi__exact='').exclude(doi__iexact='None'):
-            doi = paper.doi
-            data = self.fetch_paper_data(doi)
-            if data is not None:
-                self.create_or_update_impact_instance(paper, data)
-                self.stdout.write(self.style.SUCCESS(f'Successfully updated DOI: {doi}'))
-            else:
-                self.stdout.write(self.style.WARNING(f'No data returned for DOI: {doi}'))
+        papers = list(Paper.objects.exclude(doi__isnull=True).exclude(doi__exact='').exclude(doi__iexact='None'))
+        total_papers = len(papers)
+
+
+        completed_items = 0
+
+        for i in range(0, total_papers, self.BATCH_SIZE):
+
+
+            progress_percentage = (completed_items / total_papers) * 100
+            self.stdout.write(f'\rProgress: {completed_items} out of {total_papers} complete - {progress_percentage:.2f}%', ending='')
+            self.stdout.flush()
+
+
+            papers_batch = papers[i:i + self.BATCH_SIZE]
+            dois_batch = [paper.doi for paper in papers_batch]
+            data_batch = self.fetch_paper_data_batch(dois_batch)
+
+            self.create_or_update_impact_instances_batch(papers_batch, data_batch)
+
+            # for paper, data in zip(papers_batch, data_batch):
+            #     if data:
+            #         self.stdout.write(self.style.SUCCESS(f'Successfully updated DOI: {paper.doi}'))
+            #     else:
+            #         self.stdout.write(self.style.WARNING(f'No data returned for DOI: {paper.doi}'))
+            
+            # Update the progress
+
+            completed_items += self.BATCH_SIZE
+
+
+            # Increment the completed items
 
             time.sleep(4)
 
-        self.stdout.write(self.style.SUCCESS('Successfully created or updated impact instances'))
+        progress_percentage = 100
+        self.stdout.write(f'\rProgress: {progress_percentage:.2f}% complete', ending='')
+        self.stdout.flush()
+
+        self.stdout.write(self.style.SUCCESS('\nSuccessfully created or updated impact instances'))
