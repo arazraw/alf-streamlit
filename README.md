@@ -12,6 +12,8 @@
 ## Starting with a bulk of paper
 Added folder "SwePub" with all medical reserach articles from 1980 to 2024 in SwePub, and a script to parse JSON to a dataframe. These papers (>400k) can be our initial starting point for the app when it goes live.
 
+Currently the command import_swepub has a hardcoded destination for saving the data, this is to avoid saving it into the project as the file is 37GB when uncompacted. When attempting to run ensure that this is individualy set to desired destination. There exists code to later define a path within the project.
+
 ## Commands we created
 - The view "Papers" will be updated every time we run the command "python manage.py update_papers.py". This command script will loop through all doi in Main and check if they exist in Papers, otherwise it will fetch the records from PubMed using the functions created in /search/views.py.
 - There are now multiple commands, there are those to update_authors, update_impact, fill_affiliations also does binary checks for certain types of affiliations.
