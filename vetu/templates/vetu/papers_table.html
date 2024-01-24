@@ -1,0 +1,37 @@
+<div class="card table-card">
+    <div class="card-header">
+        <h5>Papers</h5>
+    </div>
+    <div class="pro-scroll">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover m-b-0">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Year</th>
+                            <th>Akademisk</th>
+                            <th>Region</th>
+                            <!-- Add more columns for other fields in the Paper model -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for paper in papers %}
+                            <tr>
+                                <td>{{ paper.title }}</td>
+                                <td>{{ paper.year }}</td>
+                                <td>{{ paper.akademisk }}</td>
+                                <td>{{ paper.region }}</td>
+                                <!-- Add more cells for other fields in the Paper model -->
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4">No papers found</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

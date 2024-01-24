@@ -78,6 +78,7 @@ def save_paper(request):
 
     return JsonResponse({'status': 'error form type error'}, status=400)
 
+
 def dashboard(request):
     # Handle the form submission
     if request.method == 'POST':
@@ -85,10 +86,17 @@ def dashboard(request):
         if form.is_valid():
             start_year = form.cleaned_data['start_year']
             end_year = form.cleaned_data['end_year']
+            akademisk = form.cleaned_data['akademisk']
+            region = form.cleaned_data['region']
+
+            papers = Paper.objects.all()
+
             if start_year and end_year:
-                papers = Paper.objects.filter(year__range=(start_year, end_year))
-            else:
-                papers = Paper.objects.all()
+                papers = papers.filter(year__range=(start_year, end_year))
+            if akademisk:
+                papers = papers.filter(akademisk=akademisk)
+            if region:
+                papers = papers.filter(region=region)
     else:
         form = PaperFilterForm()
         papers = Paper.objects.all()
@@ -138,7 +146,6 @@ def dashboard(request):
 
     return render(request, 'vetu/dashboard.html', context)
 
-
 def papers(request):
     papers = Paper.objects.all()
     return render(request, 'vetu/papers.html', {'papers': papers})
@@ -149,3 +156,35 @@ def authors(request):
 
 def home(request):
     return render(request, 'vetu/home.html')
+
+
+
+
+
+
+
+
+from django.http import JsonResponse
+from django.core import serializers
+
+def filter_papers(request):
+    start_year = request.GET.get('start_year')
+    end_year = request.GET.get('end_year')
+    akademisk = request.GET.get('akademisk') == 'on'
+    region = request.GET.get('region') == 'on'
+
+    papers = Paper.objects.all()
+
+    if start_year and end_year:
+        papers = papers.filter(year__range=(start_year, end_year))
+    if akademisk:
+        papers = papers.filter(akademisk=akademisk)
+    if region:
+        papers = papers.filter(region=region)
+
+    # Check if any filters are applied
+    if not (start_year or end_year or akademisk or region):
+        # No filters applied, return first 20 papers
+        papers = papers[:20]
+
+    return render(request, 'vetu/papers_table.html', {'papers': papers})
