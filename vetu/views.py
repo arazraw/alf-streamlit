@@ -1,6 +1,6 @@
 # Search's views.py
 from django.shortcuts import render
-from vetu.models import Paper, Author, Impact  # Update this line
+from vetu.models import Paper, Author, Impact, AuthorImpact  # Update this line
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from django.db.models import Count, Sum
@@ -96,6 +96,7 @@ def dashboard(request):
     # Get citation data from the Impact model
     citation_data = Impact.objects.filter(paper__in=papers)
     total_citations = citation_data.aggregate(total_citations=Sum('citations'))['total_citations']
+    total_impactful_citations = citation_data.aggregate(total_impactful_citations=Sum('impactful_citations'))['total_impactful_citations']
 
     distinct_papers_count = papers.distinct().count()
 
@@ -103,6 +104,11 @@ def dashboard(request):
     papers_per_year_data = papers.values('year').annotate(distinct_papers_count=Count('year')).order_by('year')
     # Query for the total number of citations per year
     citations_per_year_data = citation_data.values('paper__year').annotate(total_citations=Sum('citations')).order_by('paper__year')
+
+
+    # Distinct Authors
+    author_data = AuthorImpact.objects.all()
+    distinct_authors_count =author_data.distinct().count()
 
     # Papers per Year Chart
     if papers_per_year_data:
@@ -125,7 +131,9 @@ def dashboard(request):
         'chart_papers_div': chart_papers_div,
         'chart_citations_div': chart_citations_div,
         'paper_count': distinct_papers_count,
-        'total_citations': total_citations
+        'total_citations': total_citations,
+        'total_impactful_citations': total_impactful_citations,
+        'author_count': distinct_authors_count
     }
 
     return render(request, 'vetu/dashboard.html', context)

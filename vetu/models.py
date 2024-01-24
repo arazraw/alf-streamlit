@@ -39,7 +39,7 @@ class Author(models.Model):
     id = models.AutoField(primary_key=True)
     paper = models.ForeignKey(Paper, on_delete=models.CASCADE, db_index=True)
     name = models.CharField(max_length=100)
-    orcid_id = models.CharField(max_length=100, blank=True, null=True)  # Optional ORCID ID
+    identifier = models.CharField(max_length=100, blank=True, null=True)  # ID saved on PubMed
     affiliation = models.CharField(max_length=200)
     email = models.EmailField(blank=True, null=True)  # Optional Email
 
@@ -57,13 +57,14 @@ class Impact(models.Model):
 
 
 class AuthorImpact(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, null=True, blank=True)
     s2_id = models.CharField(max_length=20)
-    orcid = models.CharField(max_length=20)
+    orcid = models.CharField(max_length=20, null=True, blank=True)
     paper_count = models.IntegerField(default=0)
     citations = models.IntegerField(default=0)
     impactful_citations = models.IntegerField(default=0)
     h_index = models.IntegerField(default=0)
+    last_updated = models.DateTimeField(auto_now=True) 
 
     def __str__(self):
-        return self.Name
+        return self.name
