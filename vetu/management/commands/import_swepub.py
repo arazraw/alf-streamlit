@@ -43,6 +43,19 @@ class Command(BaseCommand):
                     instanceOf = master_data.get('instanceOf', {})
                     subject_data_list = instanceOf.get('subject', [])
 
+                    # Check if any topic has code equal to "3"
+                    has_topic_code_3 = any(
+                        'Topic' in subject.get('@type', '') and subject.get('code', '') == '3'
+                        for subject in subject_data_list
+                    )
+
+                    if has_topic_code_3:
+                        self.stdout.write(self.style.SUCCESS('The entry has a Topic with code "3".'))
+                    else:
+                        self.stdout.write(self.style.WARNING('The entry does not have a Topic with code "3".'))
+                        continue  # Skip further processing if code is not "3"
+                    
+
                     # Extract topic codes as a string
                     topic_codes = self.extract_topic_codes(subject_data_list)
 
