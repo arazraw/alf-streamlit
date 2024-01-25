@@ -30,6 +30,8 @@ class Paper(models.Model):
     affiliations_checked =  models.BooleanField(default=False)
     paper_fill = models.BooleanField(default=False)
     authors_checked = models.BooleanField(default=False)
+    topic_codes = models.CharField(max_length=100, null=True, blank=True, default='Not Coded Yet')
+
 
     def __str__(self):
         return self.title
@@ -67,4 +69,4 @@ class AuthorImpact(models.Model):
     last_updated = models.DateTimeField(auto_now=True) 
 
     def __str__(self):
-        return self.name
+        return self.s2_id #dont modify or else the update function will break
