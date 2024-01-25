@@ -52,23 +52,32 @@ def fetch_authors_and_affiliations(doi):
         for author in article['AuthorList']:
             author_name = author.get('LastName', '') + ' ' + author.get('ForeName', '')
             affiliation_info = author.get('AffiliationInfo', [{}])
-            affiliation = affiliation_info[0]['Affiliation'] if affiliation_info else ''
+            affiliation = affiliation_info[0].get('Affiliation', '') if affiliation_info else ''
             pubmed_authors_data.append({
                 'name': author_name,
                 'affiliation': affiliation,
             })
 
+    # print(pubmed_authors_data)
     # Merge data from both sources
     merged_authors_data = []
+    i = 0
     for semantic_scholar_author in semantic_scholar_authors:
         author_id = semantic_scholar_author.get('authorId', '')
         name = semantic_scholar_author.get('name', '')
-
+        pubmed_author_data = None 
+        
         # Find corresponding author data from PubMed based on name
-        pubmed_author_data = next((data for data in pubmed_authors_data if data['name'] == name), None)
+        if pubmed_authors_data and i < len(pubmed_authors_data):
+            pubmed_author_data = pubmed_authors_data[i]
+
+            i += 1
+        # print(pubmed_authors_data['affiliation'])
 
         if pubmed_author_data:
             # Merge data from both sources
+            # print('yay')
+            # print(pubmed_author_data['affiliation'])
             merged_data = {
                 'name': name,
                 'affiliation': pubmed_author_data['affiliation'],
@@ -87,7 +96,6 @@ def fetch_authors_and_affiliations(doi):
         'ArticleTitle': title,
         'Authors': merged_authors_data
     }
-    # print(data)
     return data
 
 class Command(BaseCommand):
@@ -112,6 +120,7 @@ class Command(BaseCommand):
 
                 for author_data in authors_data:
                     # Create a new Authors object for each author
+                    # print(author_data['affiliation'])
                     Author.objects.create(
                         paper=paper,
                         name=author_data['name'],
@@ -125,5 +134,4 @@ class Command(BaseCommand):
 
         self.stdout.write(f'\rProcessed {processed_papers} out of {total_papers} papers', ending='')
         self.stdout.flush()
-
         self.stdout.write(self.style.SUCCESS('\nSuccessfully updated authors'))
