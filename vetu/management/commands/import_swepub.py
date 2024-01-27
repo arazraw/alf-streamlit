@@ -18,6 +18,16 @@ class Command(BaseCommand):
             # Handle the case where parsing fails, return None or handle accordingly
             return None
 
+    def extract_topic_codes(self, subject_data_list):
+        # Extracts all topic codes from the subject data list and concatenates them into a string
+        topic_codes = []
+        for subject in subject_data_list:
+            if 'Topic' in subject.get('@type', ''):
+                topic_code = subject.get('code', '')
+                if topic_code:
+                    topic_codes.append(topic_code)
+        return ','.join(topic_codes)
+
     def handle(self, *args, **options):
         # Local directory path to the extracted .jsonl file
         jsonl_file_path = Path('/run/media/Jochen/Elements/swepub/') / 'swepub-deduplicated.jsonl'
@@ -44,13 +54,17 @@ class Command(BaseCommand):
                     else:
                         self.stdout.write(self.style.WARNING('The entry does not have a Topic with code "3".'))
                         continue  # Skip further processing if code is not "3"
+                    
 
-                    identified_by_list = master_data.get('identifiedBy', [])
+                    # Extract topic codes as a string
+                    topic_codes = self.extract_topic_codes(subject_data_list)
 
                     # Extract specific fields
                     doi = ''
                     pmid = ''
                     year = ''
+
+                    identified_by_list = master_data.get('identifiedBy', [])
 
                     for identifier in identified_by_list:
                         if identifier.get('@type', '') == 'DOI':
@@ -77,12 +91,13 @@ class Command(BaseCommand):
                     self.stdout.write(self.style.SUCCESS(f'DOI: {doi}'))
                     self.stdout.write(self.style.SUCCESS(f'PMID: {pmid}'))
                     self.stdout.write(self.style.SUCCESS(f'Year: {year}'))
+                    self.stdout.write(self.style.SUCCESS(f'Topic Codes: {topic_codes}'))
 
                     paper_exists = Paper.objects.filter(doi=doi) or Paper.objects.filter(pmid=pmid)
 
                     if not paper_exists:
                         # Create a new entry in the Paper model
-                        new_paper = Paper(doi=doi, pmid=pmid, year=year)
+                        new_paper = Paper(doi=doi, pmid=pmid, year=year, topic_codes=topic_codes)
                         new_paper.save()
                         self.stdout.write(self.style.SUCCESS(f'New entry created in the Paper model.'))
                     else:
