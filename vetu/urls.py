@@ -1,4 +1,4 @@
-# Search's urls.py
+# main urls.py
 
 from django.urls import path
 from . import views
@@ -9,7 +9,5 @@ urlpatterns = [
     path('papers/', views.papers, name='papers'),
     path('authors/', views.authors, name='authors'),
     path('home/', views.home, name='home'),
-    path('dashboard/', views.dashboard, name='dashboard'),
     path('filter_papers/', views.filter_papers, name='filter_papers')
-    # Add other search-related URLs here
 ]

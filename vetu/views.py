@@ -1,15 +1,28 @@
 # Search's views.py
 from django.shortcuts import render
-from vetu.models import Paper, Author, Impact, AuthorImpact  # Update this line
+from vetu.models import Paper, Author
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from django.db.models import Count, Sum
 import plotly.express as px
 import pandas as pd
 from .forms import PaperFilterForm
+from django.core import serializers
 
 # Importing scripts to fetch and save articles
 from .pubmed_script import fetch_articles
+
+def papers(request):
+    papers = Paper.objects.all()
+    return render(request, 'vetu/papers.html', {'papers': papers})
+
+def authors(request):
+    authors = Author.objects.all()
+    return render(request, 'vetu/authors.html', {'authors': authors})
+
+def home(request):
+    return render(request, 'vetu/home.html')
+
 
 def search(request):
     data = []
@@ -79,95 +92,8 @@ def save_paper(request):
     return JsonResponse({'status': 'error form type error'}, status=400)
 
 
-def dashboard(request):
-    # Handle the form submission
-    if request.method == 'POST':
-        form = PaperFilterForm(request.POST)
-        if form.is_valid():
-            start_year = form.cleaned_data['start_year']
-            end_year = form.cleaned_data['end_year']
-            akademisk = form.cleaned_data['akademisk']
-            region = form.cleaned_data['region']
-
-            papers = Paper.objects.all()
-
-            if start_year and end_year:
-                papers = papers.filter(year__range=(start_year, end_year))
-            if akademisk:
-                papers = papers.filter(akademisk=akademisk)
-            if region:
-                papers = papers.filter(region=region)
-    else:
-        form = PaperFilterForm()
-        papers = Paper.objects.all()
-
-    # Get citation data from the Impact model
-    citation_data = Impact.objects.filter(paper__in=papers)
-    total_citations = citation_data.aggregate(total_citations=Sum('citations'))['total_citations']
-    total_impactful_citations = citation_data.aggregate(total_impactful_citations=Sum('impactful_citations'))['total_impactful_citations']
-
-    distinct_papers_count = papers.distinct().count()
-
-    # Query for the number of papers per year
-    papers_per_year_data = papers.values('year').annotate(distinct_papers_count=Count('year')).order_by('year')
-    # Query for the total number of citations per year
-    citations_per_year_data = citation_data.values('paper__year').annotate(total_citations=Sum('citations')).order_by('paper__year')
-
-
-    # Distinct Authors
-    author_data = AuthorImpact.objects.all()
-    distinct_authors_count =author_data.distinct().count()
-
-    # Papers per Year Chart
-    if papers_per_year_data:
-        df_papers = pd.DataFrame.from_records(papers_per_year_data)
-        fig_papers = px.bar(df_papers, x='year', y='distinct_papers_count', labels={'distinct_papers_count': 'Number of Papers'}, title='Number of Papers per Year')
-        chart_papers_div = fig_papers.to_html(full_html=False, default_height=500, default_width=800)
-    else:
-        chart_papers_div = 'No data available for papers per year'
-
-    # Citations per Year Chart
-    if citations_per_year_data:
-        df_citations = pd.DataFrame.from_records(citations_per_year_data)
-        fig_citations = px.bar(df_citations, x='paper__year', y='total_citations', labels={'total_citations': 'Total Citations'}, title='Total Citations per Year')
-        chart_citations_div = fig_citations.to_html(full_html=False, default_height=500, default_width=800)
-    else:
-        chart_citations_div = 'No data available for citations per year'
-
-    context = {
-        'form': form,
-        'chart_papers_div': chart_papers_div,
-        'chart_citations_div': chart_citations_div,
-        'paper_count': distinct_papers_count,
-        'total_citations': total_citations,
-        'total_impactful_citations': total_impactful_citations,
-        'author_count': distinct_authors_count
-    }
-
-    return render(request, 'vetu/dashboard.html', context)
-
-def papers(request):
-    papers = Paper.objects.all()
-    return render(request, 'vetu/papers.html', {'papers': papers})
-
-def authors(request):
-    authors = Author.objects.all()
-    return render(request, 'vetu/authors.html', {'authors': authors})
-
-def home(request):
-    return render(request, 'vetu/home.html')
-
-
-
-
-
-
-
-
-from django.http import JsonResponse
-from django.core import serializers
-
 def filter_papers(request):
+    print("filter_papers view called")  # Add this line
     start_year = request.GET.get('start_year')
     end_year = request.GET.get('end_year')
     akademisk = request.GET.get('akademisk') == 'on'
@@ -176,6 +102,8 @@ def filter_papers(request):
     papers = Paper.objects.all()
 
     if start_year and end_year:
+        start_year = int(start_year)
+        end_year = int(end_year)
         papers = papers.filter(year__range=(start_year, end_year))
     if akademisk:
         papers = papers.filter(akademisk=akademisk)
@@ -188,3 +116,4 @@ def filter_papers(request):
         papers = papers[:20]
 
     return render(request, 'vetu/papers_table.html', {'papers': papers})
+
