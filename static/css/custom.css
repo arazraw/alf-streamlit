@@ -1,0 +1,5 @@
+.my-plot-container {
+    height: 1000px; /* or whatever height suits your layout */
+    width: 100%;
+    overflow: visible;
+}

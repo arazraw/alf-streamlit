@@ -117,3 +117,14 @@ def filter_papers(request):
 
     return render(request, 'vetu/papers_table.html', {'papers': papers})
 
+
+
+
+from django.shortcuts import render
+from .dash_apps import create_papers_dash_app
+
+# Create your views here.
+def papers_dash_view(request):
+    create_papers_dash_app()  # This will register the app with Django
+    return render(request, "vetu/papers_dash.html", {})
+

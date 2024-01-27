@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% load plotly_dash %}
+
+{% block content %}
+<!-- [ Main Content ] start -->
+<div class="pc-container">
+    <div class="pcoded-content">
+        <div class="row">
+            <!-- [ bar-Chart ] start -->
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Bar [ Basic ] Chart</h5>
+                    </div>
+                    <div class="card-body">
+                        {% plotly_app name="PapersVisualization" %}
+                    </div>
+                </div>
+            </div>
+            <!-- [ bar-Chart ] end -->
+            <!-- [ line-Chart ] start -->
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Line [ Basic ] Chart</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="chart-highchart-line1" style="width: 100%; height: 350px;"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- [ line-Chart ] end -->
+        </div>
+    </div>
+</div>
+<!-- [ Main Content ] end -->
+{% endblock %}
