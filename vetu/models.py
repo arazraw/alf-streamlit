@@ -11,8 +11,6 @@ class Paper(models.Model):
     year = models.IntegerField(null=True, blank=True, default=None)  # Publication year from PubMed XML
     month = models.CharField(max_length=20)  # Publication month from PubMed XML
     affiliations =  models.TextField()
-    citations = models.IntegerField(default=0) # From Semantic Scholar
-    influential_citations = models.IntegerField(default=0) # From Semantic Scholar
     basic_science = models.BooleanField(default=False)  # Denotes a basic science paper
     trial = models.BooleanField(default=False)  # Denotes a randomized trial
     machine = models.BooleanField(default=False)  # Denotes a machine learning or AI study
