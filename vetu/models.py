@@ -38,9 +38,9 @@ class Paper(models.Model):
 class Author(models.Model):
     id = models.AutoField(primary_key=True)
     paper = models.ForeignKey(Paper, on_delete=models.CASCADE, db_index=True)
-    name = models.CharField(max_length=100)
-    identifier = models.CharField(max_length=100, blank=True, null=True)  # ID saved on PubMed
-    affiliation = models.CharField(max_length=200)
+    name = models.CharField(max_length=200)
+    identifier = models.CharField(max_length=500, blank=True, null=True)  # ID saved on PubMed
+    affiliation = models.CharField(max_length=10000)
     email = models.EmailField(blank=True, null=True)  # Optional Email
 
     def __str__(self):
