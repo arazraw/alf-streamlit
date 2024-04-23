@@ -1,6 +1,12 @@
 from scholarly import scholarly
 from scholarly import ProxyGenerator
 
+# Set up a ProxyGenerator object to use free proxies
+# This needs to be done only once per session
+pg = ProxyGenerator()
+pg.FreeProxies()
+scholarly.use_proxy(pg)
+
 # Retrieve the author's data, fill-in, and print
 # Get an iterator for the author results
 search_query = scholarly.search_author('Steven A Cholewiak')
@@ -26,11 +32,7 @@ citations = [citation['bib']['title'] for citation in scholarly.citedby(first_pu
 print(citations)
 
 
-# Set up a ProxyGenerator object to use free proxies
-# This needs to be done only once per session
-pg = ProxyGenerator()
-pg.FreeProxies()
-scholarly.use_proxy(pg)
+
 
 # Now search Google Scholar from behind a proxy
 search_query = scholarly.search_pubs('Perception of physical stability and center of mass of 3D objects')

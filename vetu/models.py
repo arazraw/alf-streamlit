@@ -3,11 +3,11 @@ from django.db import models
 class Paper(models.Model):
     doi = models.CharField(max_length=100, primary_key=True, db_index=True)
     pmid = models.CharField(max_length=100)
-    title = models.CharField(max_length=200)
-    topic = models.CharField(max_length=100) # From Semantic Scholar
+    title = models.CharField(max_length=500)
+    topic = models.CharField(max_length=600) # Unclear
     abstract_text = models.TextField()  # Full abstract from PubMed XML
-    publication_type = models.CharField(max_length=200)  # Publication type from PubMed XML
-    journal_title = models.CharField(max_length=200)  # Journal title from PubMed XML
+    publication_type = models.CharField(max_length=500)  # Publication type from PubMed XML
+    journal_title = models.CharField(max_length=500)  # Journal title from PubMed XML
     year = models.IntegerField(null=True, blank=True, default=None)  # Publication year from PubMed XML
     month = models.CharField(max_length=20)  # Publication month from PubMed XML
     affiliations =  models.TextField()
@@ -28,7 +28,7 @@ class Paper(models.Model):
     affiliations_checked =  models.BooleanField(default=False)
     paper_fill = models.BooleanField(default=False)
     authors_checked = models.BooleanField(default=False)
-    topic_codes = models.CharField(max_length=100, null=True, blank=True, default='Not Coded Yet')
+    topic_codes = models.CharField(max_length=600, null=True, blank=True, default='Not Coded Yet')
 
 
     def __str__(self):
