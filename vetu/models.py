@@ -26,6 +26,7 @@ class Paper(models.Model):
     lin_un = models.BooleanField(default=False)
     ore_un = models.BooleanField(default=False)
     affiliations_checked =  models.BooleanField(default=False)
+    affiliation_codes = models.TextField(default='None')
     paper_fill = models.BooleanField(default=False)
     authors_checked = models.BooleanField(default=False)
     topic_codes = models.CharField(max_length=600, null=True, blank=True, default='Not Coded Yet')
