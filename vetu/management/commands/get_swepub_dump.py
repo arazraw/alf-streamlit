@@ -25,10 +25,10 @@ class Command(BaseCommand):
         remote_file_path = '/pub/spa/swepub-deduplicated.zip'
 
         # Local file path to save the downloaded file
-        local_zip_file_path = '/run/media/Jochen/Elements/swepub/swepub-deduplicated.zip'
+        local_zip_file_path = '/home/lukas/Documents/Swepub/swepub-deduplicated.zip'
 
         # Local directory path to extract the contents
-        extract_dir = '/run/media/Jochen/Elements/swepub/'
+        extract_dir = '/home/lukas/Documents/Swepub/'
 
 
         ### USE THE FILEPATHS BELOW WHEN INTEGRATING INTO ACTUAL SYSTEM ON SERVER - HOWEVER DOWNLOADED FILES ARE ALL 30 GB AND EXTRACTED EVEN LARGER DONT SAVE LOCALLY

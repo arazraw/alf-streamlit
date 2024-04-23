@@ -30,7 +30,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Local directory path to the extracted .jsonl file
-        jsonl_file_path = Path('/run/media/Jochen/Elements/swepub/') / 'swepub-deduplicated.jsonl'
+        jsonl_file_path = Path('/home/Jochen/ALF/swepub/') / 'swepub-deduplicated.jsonl'
 
         try:
             with open(jsonl_file_path, 'r', encoding='utf-8') as jsonl_file:

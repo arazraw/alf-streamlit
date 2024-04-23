@@ -19,4 +19,5 @@ Currently the command import_swepub has a hardcoded destination for saving the d
 - There are now multiple commands, there are those to update_authors, update_impact, fill_affiliations also does binary checks for certain types of affiliations.
 - In pipeline(see dev branch) there are several more which get, proccess and load data from swepub, PubMed and semantic schloar
 
-
+## Affiliations
+- The affiliation codes found in the papers column correspond to universities and departments in sweden, the decoding can be found in RegionerAkademier folder, it is currently saved in code form for easier handling.
