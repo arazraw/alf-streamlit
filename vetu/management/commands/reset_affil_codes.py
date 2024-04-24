@@ -10,9 +10,20 @@ class Command(BaseCommand):
 
         for paper in papers:
             paper.affiliation_codes = ''
+            paper.affiliations_checked = False
+            paper.akademisk = False
+            paper.region = False
+            paper.got_un = False
+            paper.kar_in = False
+            paper.lun_un = False
+            paper.ume_un = False
+            paper.upp_un = False
+            paper.lin_un = False
+            paper.ore_un = False
             paper.save()
             numb += 1
             self.stdout.write(f'\rProgress: {numb}/{len(papers)} complete', ending='')
             self.stdout.flush()
 
-        self.stdout.write(self.style.SUCCESS('Successfully reset affiliation codes field for all papers.'))
+
+        self.stdout.write(self.style.SUCCESS('\nSuccessfully reset affiliation codes field for all papers.'))

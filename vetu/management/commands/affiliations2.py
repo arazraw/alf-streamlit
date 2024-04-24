@@ -21,7 +21,8 @@ class Command(BaseCommand):
         # Iterate over each paper
         numb = 0
         paper_count = Paper.objects.count()
-        for paper in Paper.objects.all():
+        papers = Paper.objects.filter(affiliations_checked=False)
+        for paper in papers:
             numb += 1
             affiliations = paper.affiliations.split(';')
             codes = set()  # Use a set to store unique codes
@@ -67,9 +68,46 @@ class Command(BaseCommand):
                                 
 
             # Update affiliation_codes field
+            affiliations_c = paper.affiliations.lower()
+
             paper.affiliation_codes = ';'.join(list(codes))  # Convert set to list before joining
+            paper.akademisk = any(keyword in affiliations_c for keyword in ['akademisk', 'akademi', 'university', 'högskola'])
+            paper.region = any(keyword in affiliations_c for keyword in ['region', 'hospital'])
+            paper.got_un = any(keyword in affiliations_c for keyword in ['university of gothenburg', 'gothenburg university', 'göteborgs universitet'])
+            paper.kar_in = any(keyword in affiliations_c for keyword in ['karolinska institutet', 'karolinska institute'])
+            paper.lun_un = any(keyword in affiliations_c for keyword in ['lund universitet', 'lund university'])
+            paper.ume_un = any(keyword in affiliations_c for keyword in ['umeå university', 'umea university'])
+            paper.upp_un = any(keyword in affiliations_c for keyword in ['uppsala university', 'uppsala universitet'])
+            paper.lin_un = any(keyword in affiliations_c for keyword in ['linköping university', 'linköping universitet'])
+            paper.ore_un = any(keyword in affiliations_c for keyword in ['örebro university', 'örebro universitet'])
+            single_digit_codes = [code for code in codes if len(code) == 1]
+            for code in single_digit_codes:
+                if code == '1':
+                    paper.got_un = True
+                    paper.akademisk = True
+                elif code == '2':
+                    paper.kar_in = True
+                    paper.akademisk = True
+                elif code == '3':
+                    paper.lin_un = True
+                    paper.akademisk = True
+                elif code == '4':
+                    paper.ume_un = True
+                    paper.akademisk = True
+                elif code == '5':
+                    paper.ore_un = True
+                    paper.akademisk = True
+                elif code == '6':
+                    paper.upp_un = True
+                    paper.akademisk = True
+                elif code == '7':
+                    paper.lun_un = True
+                    paper.akademisk = True
+            # Set affiliations_checked to True to indicate that the affiliations field has been processed
+            paper.affiliations_checked = True
+
             paper.save()
             self.stdout.write(f'\rProgress: {numb}/{paper_count} complete', ending='')
             self.stdout.flush()
 
-        self.stdout.write(self.style.SUCCESS('Successfully updated affiliation_codes for all papers'))
+        self.stdout.write(self.style.SUCCESS('\nSuccessfully updated affiliation_codes for all papers'))
