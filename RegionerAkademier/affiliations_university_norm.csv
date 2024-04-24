@@ -3,9 +3,9 @@ Gothenburg University,gthnbrgnvrsty,1
 Göteborg University,gtbrgnvrsty,1
 Göteborgs Universitet,gtbrgsnvrstt,1
 Institute of Biomedicine,nstttbmdcn,12
-Department of Chemistry and Molecular Biology,dprtmntchmstrymlclrblgy,13
+Department of Chemistry and Molecular Biology,chmstrymlclrblgy,13
 Institute of Clinical Sciences,nstttclnclscncs,14
-Department of Food and Nutrition and Sport Science,dprtmntfdntrtnsprtscnc,15
+Department of Food and Nutrition and Sport Science,fdntrtnsprtscnc,15
 Institute of Medicine,nstttmdcn,16
 Institute of Neuroscience and Physiology,nstttnrscncphyslgy,17
 Institute of Odontology,nstttdntlgy,18
@@ -17,12 +17,12 @@ Kost- och idrottsvetenskap,kstdrttsvtnskp,15
 Medicin,mdcn,16
 Neurovetenskap och fysiologi,nrvtnskpfyslg,17
 Odontologi,dntlg,18
-"Vårdvetenskap och hälsa, inst för ",vrdvtnskphlsnst,19
-Department of Infectious Dieseases,dprtmntnfctsdsss,121
-Department of Microbiology and Immunoogy,dprtmntmcrblgymmngy,122
-Department of Laboratory Medicine,dprtmntlbrtrymdcn,123
-Department of Medical Biochemistry and Cell biology,dprtmntmdclbchmstrycllblgy,124
-Department of Onocology,dprtmntnclgy,1401
+"Vårdvetenskap och hälsa, inst för ",vrdvtnskphls,19
+Department of Infectious Dieseases,nfctsdsss,121
+Department of Microbiology and Immunoogy,mcrblgymmngy,122
+Department of Laboratory Medicine,lbrtrymdcn,123
+Department of Medical Biochemistry and Cell biology,mdclbchmstrycllblgy,124
+Department of Onocology,nclgy,1401
 Radiology ,rdlgy,1402
 Anesthesiology and intensive Care,nsthslgyntnsvcr,1403
 Deramtology and Venerolgy,drmtlgyvnrlgy,1404
@@ -73,68 +73,68 @@ Molekylär medicin och kirurgi,mlkylrmdcnkrrg,218
 Neurovetenskap,nrvtnskp,220
 Odontologi,dntlg,221
 Onkologi-patologi,nklgptlg,222
-Department of Biosciences and Nutrition,dprtmntbscncsntrtn,201
-Department of Cell and Molecular Biology,dprtmntcllmlclrblgy,202
-Department of Physiology and Pharmacology,dprtmntphyslgyphrmclgy,203
-Department of Global Public Health,dprtmntglblpblchlth,204
+Department of Biosciences and Nutrition,bscncsntrtn,201
+Department of Cell and Molecular Biology,cllmlclrblgy,202
+Department of Physiology and Pharmacology,physlgyphrmclgy,203
+Department of Global Public Health,glblpblchlth,204
 Institute of Environmental Medicine,nstttnvrnmntlmdcn,205
-"Department of Clinical Science and Education, Södersjukhuset",dprtmntclnclscncdctnsdrsjkhst,206
-Department of Clinical Neuroscience,dprtmntclnclnrscnc,207
-"Department of Clinical Science, Intervention and Technology",dprtmntclnclscncntrvntntchnlgy,208
-"Department of Clinical Sciences, Danderyd Hospital",dprtmntclnclscncsdndrydhsptl,209
-Department of Women’s and Children’s Health,dprtmntwmn’schldrn’shlth,210
-Department of Laboratory Medicine,dprtmntlbrtrymdcn,211
-"Department of Learning, Informatics, Management and Ethics",dprtmntlrnngnfrmtcsmngmntthcs,212
-"Department of Medicine, Huddinge",dprtmntmdcnhddng,213
-"Department of Medicine, Solna",dprtmntmdcnsln,214
-Department of Medical Biochemistry and Biophysics,dprtmntmdclbchmstrybphyscs,215
-Department of Medical Epidemiology and Biostatistics,dprtmntmdclpdmlgybsttstcs,216
-"Department of Microbiology, Tumor and Cell Biology",dprtmntmcrblgytmrcllblgy,217
-Department of Molecular Medicine and Surgery,dprtmntmlclrmdcnsrgry,218
-"Department of Neurobiology, Care Sciences and Society",dprtmntnrblgycrscncsscty,219
-Department of Neuroscience,dprtmntnrscnc,220
-Department of Dental Medicine,dprtmntdntlmdcn,221
-Department of Oncology-Pathology,dprtmntnclgypthlgy,222
+"Department of Clinical Science and Education, Södersjukhuset",clnclscncdctnsdrsjkhst,206
+Department of Clinical Neuroscience,clnclnrscnc,207
+"Department of Clinical Science, Intervention and Technology",clnclscncntrvntntchnlgy,208
+"Department of Clinical Sciences, Danderyd Hospital",clnclscncsdndrydhsptl,209
+Department of Women’s and Children’s Health,wmn’schldrn’shlth,210
+Department of Laboratory Medicine,lbrtrymdcn,211
+"Department of Learning, Informatics, Management and Ethics",lrnngnfrmtcsmngmntthcs,212
+"Department of Medicine, Huddinge",mdcnhddng,213
+"Department of Medicine, Solna",mdcnsln,214
+Department of Medical Biochemistry and Biophysics,mdclbchmstrybphyscs,215
+Department of Medical Epidemiology and Biostatistics,mdclpdmlgybsttstcs,216
+"Department of Microbiology, Tumor and Cell Biology",mcrblgytmrcllblgy,217
+Department of Molecular Medicine and Surgery,mlclrmdcnsrgry,218
+"Department of Neurobiology, Care Sciences and Society",nrblgycrscncsscty,219
+Department of Neuroscience,nrscnc,220
+Department of Dental Medicine,dntlmdcn,221
+Department of Oncology-Pathology,nclgypthlgy,222
 Linköping University,lnkpngnvrsty,3
 Linköpings Universitet,lnkpngsnvrstt,3
 University of Linköping,nvrstylnkpng,3
-Institutionen för biomedicinska och kliniska vetenskaper,nstttnnbmdcnskklnskvtnskpr,31
-"Institutionen för fysik, kemi och biologi",nstttnnfyskkmblg,32
-"Institutionen för hälsa, medicin och vård",nstttnnhlsmdcnvrd,33
-Institutionen för medicinsk teknik,nstttnnmdcnsktknk,34
-Department of Biomedical and Clinical Sciences,dprtmntbmdclclnclscncs,31
-"Department of Physics, Chemistry and Biology",dprtmntphyscschmstryblgy,32
-"Department of Health, Medicine and Caring Sciences",dprtmnthlthmdcncrngscncs,33
-Department of Biomedical Engineering,dprtmntbmdclngnrng,34
+Institutionen för biomedicinska och kliniska vetenskaper,bmdcnskklnskvtnskpr,31
+"Institutionen för fysik, kemi och biologi",fyskkmblg,32
+"Institutionen för hälsa, medicin och vård",hlsmdcnvrd,33
+Institutionen för medicinsk teknik,mdcnsktknk,34
+Department of Biomedical and Clinical Sciences,bmdclclnclscncs,31
+"Department of Physics, Chemistry and Biology",physcschmstryblgy,32
+"Department of Health, Medicine and Caring Sciences",hlthmdcncrngscncs,33
+Department of Biomedical Engineering,bmdclngnrng,34
 Umeå Universitet,mnvrstt,4
 Umeå University,mnvrsty,4
 University of Umeå,nvrstym,4
-Institutionen för epidemiologi och global hälsa,nstttnnpdmlgglblhls,401
-Institutionen för folkhälsa och klinisk medicin,nstttnnflkhlsklnskmdcn,402
-Institutionen för integrativ medicinsk biologi (IMB),nstttnnntgrtvmdcnskblg,403
-Institutionen för kirurgisk och perioperativ vetenskap,nstttnnkrrgskprprtvvtnskp,404
-Institutionen för klinisk mikrobiologi,nstttnnklnskmkrblg,405
-Institutionen för klinisk vetenskap,nstttnnklnskvtnskp,406
-Institutionen för kost- och måltidsvetenskap,nstttnnkstmltdsvtnskp,407
-Institutionen för medicinsk biovetenskap,nstttnnmdcnskbvtnskp,408
-Institutionen för medicinsk kemi och biofysik,nstttnnmdcnskkmbfysk,409
-Institutionen för molekylärbiologi,nstttnnmlkylrblg,410
-Institutionen för odontologi,nstttnndntlg,411
-Institutionen för omvårdnad,nstttnnmvrdnd,412
-Institutionen för samhällsmedicin och rehabilitering,nstttnnsmhllsmdcnrhbltrng,413
-Department of Epidemiology and Global Health,dprtmntpdmlgyglblhlth,401
-Department of Public Health and Clinical Medicine,dprtmntpblchlthclnclmdcn,402
-Department of Medical and Translational Biology,dprtmntmdcltrnsltnlblgy,403
-Department of Surgical and Perioperative Sciences,dprtmntsrgclprprtvscncs,404
-Department of Clinical Microbiology,dprtmntclnclmcrblgy,405
-Department of Clinical Sciences,dprtmntclnclscncs,406
-"Department of Food, Nutrition and Culinary Science",dprtmntfdntrtnclnryscnc,407
-Department of Medical Biosciences,dprtmntmdclbscncs,408
-Department of Medical Biochemistry and Biophysics,dprtmntmdclbchmstrybphyscs,409
-Department of Molecular Biology,dprtmntmlclrblgy,410
-Department of Odontology,dprtmntdntlgy,411
-Department of Nursing,dprtmntnrsng,412
-Department of Community Medicine and Rehabilitation,dprtmntcmmntymdcnrhblttn,413
+Institutionen för epidemiologi och global hälsa,pdmlgglblhls,401
+Institutionen för folkhälsa och klinisk medicin,flkhlsklnskmdcn,402
+Institutionen för integrativ medicinsk biologi (IMB),ntgrtvmdcnskblg,403
+Institutionen för kirurgisk och perioperativ vetenskap,krrgskprprtvvtnskp,404
+Institutionen för klinisk mikrobiologi,klnskmkrblg,405
+Institutionen för klinisk vetenskap,klnskvtnskp,406
+Institutionen för kost- och måltidsvetenskap,kstmltdsvtnskp,407
+Institutionen för medicinsk biovetenskap,mdcnskbvtnskp,408
+Institutionen för medicinsk kemi och biofysik,mdcnskkmbfysk,409
+Institutionen för molekylärbiologi,mlkylrblg,410
+Institutionen för odontologi,dntlg,411
+Institutionen för omvårdnad,mvrdnd,412
+Institutionen för samhällsmedicin och rehabilitering,smhllsmdcnrhbltrng,413
+Department of Epidemiology and Global Health,pdmlgyglblhlth,401
+Department of Public Health and Clinical Medicine,pblchlthclnclmdcn,402
+Department of Medical and Translational Biology,mdcltrnsltnlblgy,403
+Department of Surgical and Perioperative Sciences,srgclprprtvscncs,404
+Department of Clinical Microbiology,clnclmcrblgy,405
+Department of Clinical Sciences,clnclscncs,406
+"Department of Food, Nutrition and Culinary Science",fdntrtnclnryscnc,407
+Department of Medical Biosciences,mdclbscncs,408
+Department of Medical Biochemistry and Biophysics,mdclbchmstrybphyscs,409
+Department of Molecular Biology,mlclrblgy,410
+Department of Odontology,dntlgy,411
+Department of Nursing,nrsng,412
+Department of Community Medicine and Rehabilitation,cmmntymdcnrhblttn,413
 Örebro Universitet,rbrnvrstt,5
 Örebro University,rbrnvrsty,5
 University of Örebro,nvrstyrbr,5
@@ -145,34 +145,34 @@ School of Medical Sciences,schlmdclscncs,52
 Uppsala Universitet,ppslnvrstt,6
 Uppsala University,ppslnvrsty,6
 University of Uppsala,nvrstyppsl,6
-Institutionen för biologisk grundutbildning,nstttnnblgskgrndtbldnng,601
-Institutionen för farmaceutisk biovetenskap,nstttnnfrmctskbvtnskp,602
-Institutionen för farmaci,nstttnnfrmc,603
-Institutionen för folkhälso- och vårdvetenskap,nstttnnflkhlsvrdvtnskp,604
-"Institutionen för immunologi, genetik och patologi",nstttnnmmnlggntkptlg,605
-Institutionen för kemi - BMC,nstttnnkmbmc,606
-Institutionen för kemi - Ångström,nstttnnkmngstrm,607
-Institutionen för kirurgiska vetenskaper,nstttnnkrrgskvtnskpr,608
-Institutionen för kostvetenskap,nstttnnkstvtnskp,609
-Institutionen för kvinnors och barns hälsa,nstttnnkvnnrsbrnshls,610
-Institutionen för läkemedelskemi,nstttnnlkmdlskm,611
-Institutionen för medicinska vetenskaper,nstttnnmdcnskvtnskpr,612
-Institutionen för medicinsk biokemi och mikrobiologi,nstttnnmdcnskbkmmkrblg,613
-Institutionen för medicinsk cellbiologi,nstttnnmdcnskcllblg,614
+Institutionen för biologisk grundutbildning,blgskgrndtbldnng,601
+Institutionen för farmaceutisk biovetenskap,frmctskbvtnskp,602
+Institutionen för farmaci,frmc,603
+Institutionen för folkhälso- och vårdvetenskap,flkhlsvrdvtnskp,604
+"Institutionen för immunologi, genetik och patologi",mmnlggntkptlg,605
+Institutionen för kemi - BMC,kmbmc,606
+Institutionen för kemi - Ångström,kmngstrm,607
+Institutionen för kirurgiska vetenskaper,krrgskvtnskpr,608
+Institutionen för kostvetenskap,kstvtnskp,609
+Institutionen för kvinnors och barns hälsa,kvnnrsbrnshls,610
+Institutionen för läkemedelskemi,lkmdlskm,611
+Institutionen för medicinska vetenskaper,mdcnskvtnskpr,612
+Institutionen för medicinsk biokemi och mikrobiologi,mdcnskbkmmkrblg,613
+Institutionen för medicinsk cellbiologi,mdcnskcllblg,614
 Biology Education Center,blgydctncntr,601
-Department of Pharmaceutical Biosciences,dprtmntphrmctclbscncs,602
-Department of Pharmacy,dprtmntphrmcy,603
-Department of Public Health and Caring Sciences,dprtmntpblchlthcrngscncs,604
-"Department of Immunology, Genetics and Pathology",dprtmntmmnlgygntcspthlgy,605
-Department of Chemistry – Ångström Laboratory,dprtmntchmstry–ngstrmlbrtry,606
-Department of Chemistry – BMC,dprtmntchmstry–bmc,607
-Department of Surgical Sciences,dprtmntsrgclscncs,608
-"Department of Food Studies, Nutrition and Dietetics",dprtmntfdstdsntrtndttcs,609
-Department of Women’s and Children’s Health,dprtmntwmn’schldrn’shlth,610
-Department of Medicinal Chemistry,dprtmntmdcnlchmstry,611
-Department of Medical Sciences,dprtmntmdclscncs,612
-Department of Medical Biochemistry and Microbiology,dprtmntmdclbchmstrymcrblgy,613
-Department of Medical Cell Biology,dprtmntmdclcllblgy,614
+Department of Pharmaceutical Biosciences,phrmctclbscncs,602
+Department of Pharmacy,phrmcy,603
+Department of Public Health and Caring Sciences,pblchlthcrngscncs,604
+"Department of Immunology, Genetics and Pathology",mmnlgygntcspthlgy,605
+Department of Chemistry – Ångström Laboratory,chmstry–ngstrmlbrtry,606
+Department of Chemistry – BMC,chmstry–bmc,607
+Department of Surgical Sciences,srgclscncs,608
+"Department of Food Studies, Nutrition and Dietetics",fdstdsntrtndttcs,609
+Department of Women’s and Children’s Health,wmn’schldrn’shlth,610
+Department of Medicinal Chemistry,mdcnlchmstry,611
+Department of Medical Sciences,mdclscncs,612
+Department of Medical Biochemistry and Microbiology,mdclbchmstrymcrblgy,613
+Department of Medical Cell Biology,mdclcllblgy,614
 Lunds Universitet,lndsnvrstt,7
 Lund University,lndnvrsty,7
 University of Lund,nvrstylnd,7
@@ -186,13 +186,13 @@ Immunteknologi,mmntknlg,705
 "Laboratoriemedicin, Lund",lbrtrmdcnlnd,708
 Translationell medicin,trnsltnllmdcn,709
 Stamcellscentrum (SCC),stmcllscntrm,710
-Department of Biomedical Engineering,dprtmntbmdclngnrng,701
+Department of Biomedical Engineering,bmdclngnrng,701
 "Biomedical Centre, BMC",bmdclcntrbmc,702
-Department of Experimental Medical Sciences,dprtmntxprmntlmdclscncs,703
-Department of Health Sciences,dprtmnthlthscncs,704
-Department of Immunotechnology,dprtmntmmntchnlgy,705
-"Department of Clinical Sciences, Lund",dprtmntclnclscncslnd,706
-"Department of Clinical Sciences, Malmö",dprtmntclnclscncsmlm,707
-Department of Laboratory Medicine,dprtmntlbrtrymdcn,708
-Department of Translational Medicine,dprtmnttrnsltnlmdcn,709
+Department of Experimental Medical Sciences,xprmntlmdclscncs,703
+Department of Health Sciences,hlthscncs,704
+Department of Immunotechnology,mmntchnlgy,705
+"Department of Clinical Sciences, Lund",clnclscncslnd,706
+"Department of Clinical Sciences, Malmö",clnclscncsmlm,707
+Department of Laboratory Medicine,lbrtrymdcn,708
+Department of Translational Medicine,trnsltnlmdcn,709
 Stem Cell Center,stmcllcntr,710

@@ -3,7 +3,7 @@ import re
 
 def normalize_string(input_string):
     # Apply regex normalization
-    input_string = re.sub(r'\b(?:of|the|The|and|och|Department|Dept|Dept\.|Inst\.|Institutionen|Inst|för)\b', '', input_string.lower())
+    input_string = re.sub(r'\b(?:of|the|and|och|department|dept|dept\.|inst\.|institutionen|inst|för)\b', '', input_string.lower())
     input_string = re.sub(r'\(.*?\)', '', input_string)  # Remove parentheses and anything inside
     input_string = re.sub(r'[-,]', '', input_string)  # Remove hyphens and commas
     normalized_string = re.sub(r'[aeiouäöü\s.\-"\'å]', '', input_string.lower())

@@ -31,7 +31,7 @@ class Command(BaseCommand):
                 parts = affiliation.split(',')
                 parts = [part.split('at') for part in parts]
                 parts = [item for sublist in parts for item in sublist]  # Flatten the list
-                parts = [re.sub(r'\b(?:of|the|The|and|och|Department|Dept|Dept\.|Inst\.|Institutionen|Inst|för)\b', '', part.lower()) for part in parts]                
+                parts = [re.sub(r'\b(?:of|the|and|och|department|dept|dept\.|inst\.|institutionen|inst|för)\b', '', part.lower()) for part in parts]                
                 # Reverse iterate over parts and match codes
                 single_digit_code_found = False
                 digit_code = 0
