@@ -2,14 +2,14 @@ University of Gothenburg,nvrstygthnbrg,1
 Gothenburg University,gthnbrgnvrsty,1
 Göteborg University,gtbrgnvrsty,1
 Göteborgs Universitet,gtbrgsnvrstt,1
-Institute of Biomedicine,nstttbmdcn,12
+Institute of Biomedicine,bmdcn,12
 Department of Chemistry and Molecular Biology,chmstrymlclrblgy,13
-Institute of Clinical Sciences,nstttclnclscncs,14
+Institute of Clinical Sciences,clnclscncs,14
 Department of Food and Nutrition and Sport Science,fdntrtnsprtscnc,15
-Institute of Medicine,nstttmdcn,16
-Institute of Neuroscience and Physiology,nstttnrscncphyslgy,17
-Institute of Odontology,nstttdntlgy,18
-Institute of Health and Care Sciences,nsttthlthcrscncs,19
+Institute of Medicine,mdcn,16
+Institute of Neuroscience and Physiology,nrscncphyslgy,17
+Institute of Odontology,dntlgy,18
+Institute of Health and Care Sciences,hlthcrscncs,19
 Biomedicin,bmdcn,12
 Kemi och molekylärbiologi,kmmlkylrblg,13
 "Kliniska vetenskaper, ",klnskvtnskpr,14
@@ -49,13 +49,13 @@ Reproductive and perinatal health,rprdctvprntlhlth,192
 "Diagnostics, Acute and Critical Care",dgnstcsctcrtclcr,193
 Care in Long-term Conditions,crnlngtrmcndtns,194
 The Life Context and Health Promotion,lfcntxthlthprmtn,195
-Karolinska Institutet,krlnsknstttt,2
-Karolinska Institute,krlnsknsttt,2
+Karolinska Institutet,krlnsk,2
+Karolinska Institute,krlnsk,2
 Biovetenskaper och näringslära,bvtnskprnrngslr,201
 Cell- och molekylärbiologi,cllmlkylrblg,202
 Fysiologi och farmakologi,fyslgfrmklg,203
 Global folkhälsa,glblflkhls,204
-Institutet för miljömedicin,nsttttmljmdcn,205
+Institutet för miljömedicin,mljmdcn,205
 "Klinisk forskning och utbildning, Södersjukhuset",klnskfrsknngtbldnngsdrsjkhst,206
 Klinisk neurovetenskap,klnsknrvtnskp,207
 "Klinisk vetenskap, intervention och teknik",klnskvtnskpntrvntntknk,208
@@ -77,7 +77,7 @@ Department of Biosciences and Nutrition,bscncsntrtn,201
 Department of Cell and Molecular Biology,cllmlclrblgy,202
 Department of Physiology and Pharmacology,physlgyphrmclgy,203
 Department of Global Public Health,glblpblchlth,204
-Institute of Environmental Medicine,nstttnvrnmntlmdcn,205
+Institute of Environmental Medicine,nvrnmntlmdcn,205
 "Department of Clinical Science and Education, Södersjukhuset",clnclscncdctnsdrsjkhst,206
 Department of Clinical Neuroscience,clnclnrscnc,207
 "Department of Clinical Science, Intervention and Technology",clnclscncntrvntntchnlgy,208
@@ -164,8 +164,8 @@ Department of Pharmaceutical Biosciences,phrmctclbscncs,602
 Department of Pharmacy,phrmcy,603
 Department of Public Health and Caring Sciences,pblchlthcrngscncs,604
 "Department of Immunology, Genetics and Pathology",mmnlgygntcspthlgy,605
-Department of Chemistry – Ångström Laboratory,chmstry–ngstrmlbrtry,606
-Department of Chemistry – BMC,chmstry–bmc,607
+Department of Chemistry - Ångström Laboratory,chmstryngstrmlbrtry,606
+Department of Chemistry – BMC,chmstrybmc,607
 Department of Surgical Sciences,srgclscncs,608
 "Department of Food Studies, Nutrition and Dietetics",fdstdsntrtndttcs,609
 Department of Women’s and Children’s Health,wmn’schldrn’shlth,610
