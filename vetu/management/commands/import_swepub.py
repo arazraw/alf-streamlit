@@ -1,6 +1,5 @@
-# import_swepub.py
-
 from django.core.management.base import BaseCommand
+import os
 import json
 from pathlib import Path
 from django.conf import settings
@@ -30,8 +29,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Local directory path to the extracted .jsonl file
-        jsonl_file_path = Path('/home/Jochen/ALF/swepub/') / 'swepub-deduplicated.jsonl'
-
+        jsonl_file_path = os.path.join(settings.BASE_DIR, 'SwePub/swepub-deduplicated.jsonl')
         try:
             with open(jsonl_file_path, 'r', encoding='utf-8') as jsonl_file:
                 # Loop through each entry in the .jsonl file

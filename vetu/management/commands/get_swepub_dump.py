@@ -9,7 +9,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Display a warning and ask for confirmation
-        confirm = input("THIS WILL DOWNLOAD AND EXTRACT FILES TOTALING ALMOST 30GB, ALSO THE FILE PATHS ARE HARDCODED - HAVE YOU CHECKED THEM BEFORE USE? (yes/no): ")
+        confirm = input("THIS WILL DOWNLOAD AND EXTRACT FILES TOTALING ALMOST 30GB, WILL SAVE TO THIS REPOSITORY IN THE SwePub FOLDER - ARE YOU SURE YOU WISH TO CONTINUE? (yes/no): ")
 
         if confirm.lower() != 'yes':
             self.stdout.write(self.style.ERROR("Operation aborted by user."))
@@ -25,19 +25,10 @@ class Command(BaseCommand):
         remote_file_path = '/pub/spa/swepub-deduplicated.zip'
 
         # Local file path to save the downloaded file
-        local_zip_file_path = '/home/lukas/Documents/Swepub/swepub-deduplicated.zip'
+        local_zip_file_path = os.path.join(settings.BASE_DIR, 'SwePub/swepub-deduplicated.zip')
 
         # Local directory path to extract the contents
-        extract_dir = '/home/lukas/Documents/Swepub/'
-
-
-        ### USE THE FILEPATHS BELOW WHEN INTEGRATING INTO ACTUAL SYSTEM ON SERVER - HOWEVER DOWNLOADED FILES ARE ALL 30 GB AND EXTRACTED EVEN LARGER DONT SAVE LOCALLY
-        # # Local file path to save the downloaded file
-        # local_zip_file_path = os.path.join(settings.SWEPUB_DATA_DUMP_PATH, 'swepub-deduplicated.zip')
-
-        # # Local directory path to extract the contents
-        # extract_dir = os.path.join(settings.SWEPUB_DATA_DUMP_PATH, 'extracted')
-
+        extract_dir = os.path.join(settings.BASE_DIR, 'SwePub/')
 
         # Connect to the FTP server with anonymous access
         with FTP(ftp_host) as ftp:
