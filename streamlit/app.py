@@ -4,6 +4,14 @@ import psycopg2
 import matplotlib.pyplot as plt
 import plotly.express as px
 from supabase import create_client, Client
+import plotly.io as pio
+import io
+
+st.set_page_config(
+        page_title="Vetu",
+        layout="wide"
+)
+
 
 file_path_university = '/Users/xanerc/Documents/Vetu/alf/RegionerAkademier/affiliations_university_norm.csv'
 universities = pd.read_csv(file_path_university)
@@ -38,9 +46,6 @@ def plot_line_graph(df, x_column, y_column, title):
     fig.update_layout(title=title)
     return fig
 
-# Set the page to wide mode
-st.set_page_config(layout="wide")
-
 # Inject custom CSS to style the radio buttons as links and increase text size
 st.markdown("""
     <style>
@@ -70,22 +75,20 @@ st.markdown("""
 st.sidebar.header('Välj verktyg')
 
 # Navigation menu
-navigation = st.sidebar.radio('', ('Hem', 'Översikt', 'Akademi & Högskola', 'Region (ALF)', 'Tidsskrifter', 'Forskare', 'Finansiärer', 'Innovation', 'Sök Artiklar'))
+navigation = st.sidebar.radio('', ('Översikt', 'Akademi & Högskola', 'Region (ALF)', 'Tidsskrifter', 'Forskare', 'Finansiärer', 'Innovation', 'Sök Artiklar'))
 
 st.title(navigation)
+st.write('---')
 
-if navigation == 'Hem':
-    st.subheader("Welcome!")
+if navigation == 'Översikt':
 
-elif navigation == 'Översikt':
-    
     col1, col2 = st.columns(2)
 
     with col1:
         # Function to fetch data from the database
         def fetch_impact_data():
             conn = create_conn()
-            query = "SELECT citations, impactful_citations FROM vetu_impact"
+            query = "SELECT citations, year, impactful_citations FROM vetu_impact"
             df = pd.read_sql_query(query, conn)
             conn.close()
             return df
@@ -98,13 +101,53 @@ elif navigation == 'Översikt':
         total_impactful_citations = impact_df['impactful_citations'].sum()
         total_papers = impact_df['citations'].count()
 
+        def fetch_impact_data_author():
+            conn = create_conn()
+            query = "SELECT name FROM vetu_author"
+            df = pd.read_sql_query(query, conn)
+            conn.close()
+            return df
+
+        # Fetch data
+        impact_df_author = pd.DataFrame(fetch_impact_data_author())
+
+        total_authors = len(pd.unique(impact_df_author['name']))
+
+        # Function to fetch data from the database
+        def fetch_citation_data():
+            conn = create_conn()
+            query = "SELECT year, citations FROM vetu_impact"
+            df = pd.read_sql_query(query, conn)
+            conn.close()
+            return df
+
+        # Fetch data
+        citation_df = fetch_citation_data()
+
+        # Categorize papers based on citation counts
+        citation_df['citation_category'] = pd.cut(
+            citation_df['citations'],
+            bins=[-1, 5, 10, citation_df['citations'].max()],
+            labels=['≤5 Citations', '6-10 Citations', '>10 Citations']
+        )
+
+        # Count the total number of papers with 10 or fewer citations
+        total_papers_cited_10_or_less = citation_df[citation_df['citation_category'].isin(['≤5 Citations', '6-10 Citations'])].shape[0]
+        percentage_papers_cited_10_or_less = round(total_papers_cited_10_or_less * 100 / total_papers, 2)
+
+        total_papers_cited_5_or_less = citation_df[citation_df['citation_category'].isin(['≤5 Citations'])].shape[0]
+        percentage_papers_cited_5_or_less = round(total_papers_cited_5_or_less * 100 / total_papers, 2)
+
         # Display the info box
         st.markdown(f"""
-        <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px;">
+        <div style="background-color: #d9d9d9; padding: 20px; border-radius: 15px;">
             <h3 style="color: #333;">Impact Summary</h3>
             <p><strong>Total Citations:</strong> {total_citations}</p>
             <p><strong>Total Impactful Citations:</strong> {total_impactful_citations}</p>
             <p><strong>Total Number of Papers:</strong> {total_papers}</p>
+            <p><strong>Total Number of Authors:</strong> {total_authors}</p>
+            <p><strong>Percentage of Papers with ≤10 citations:</strong> {percentage_papers_cited_10_or_less}%</p>
+            <p><strong>Percentage of Papers with ≤5 citations:</strong> {percentage_papers_cited_5_or_less}%</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -146,24 +189,6 @@ elif navigation == 'Översikt':
         # Display the plot in Streamlit
         st.plotly_chart(fig)
 
-    # Function to fetch data from the database
-    def fetch_citation_data():
-        conn = create_conn()
-        query = "SELECT year, citations FROM vetu_impact"
-        df = pd.read_sql_query(query, conn)
-        conn.close()
-        return df
-
-    # Fetch data
-    citation_df = fetch_citation_data()
-
-    # Categorize papers based on citation counts
-    citation_df['citation_category'] = pd.cut(
-        citation_df['citations'],
-        bins=[-1, 1, 5, citation_df['citations'].max()],
-        labels=['≤1 Citation', '2-5 Citations', '>5 Citations']
-    )
-
     # Calculate the percentage composition for each year
     composition_df = citation_df.groupby(['year', 'citation_category']).size().reset_index(name='count')
     total_per_year = composition_df.groupby('year')['count'].transform('sum')
@@ -172,21 +197,54 @@ elif navigation == 'Översikt':
     # Pivot the data for plotting
     pivot_df = composition_df.pivot(index='year', columns='citation_category', values='percentage').fillna(0)
 
+    # Define custom colors
+    custom_colors = ['#F60909', '#FFF710', '#11C618']  # Red, yellow, green
+
     # Plot the percentage composition as a stacked bar chart
-    fig = px.bar(pivot_df, x=pivot_df.index, y=pivot_df.columns, title='Percentage Composition of Papers by Citation Counts (1990-2024)',
+    fig = px.bar(pivot_df, x=pivot_df.index, y=pivot_df.columns, title='Percentage of Papers by Citation Counts (1990-2024)',
                 labels={'value': 'Percentage', 'year': 'Year'}, 
-                barmode='stack')
+                barmode='stack', color_discrete_sequence=custom_colors)
 
     # Update the x-axis range to start at 1990
     fig.update_layout(
         xaxis=dict(
-            range=[1990, 2024],
+            range=[1990, 2025],
             tickmode='linear',
             tick0=1990,
             dtick=1
         ),
         yaxis=dict(
-            title='Percentage'
+            title='Percentage'),
+            legend_title_text='Citation Groups'
+        
+    )
+
+    # Display the plot in Streamlit
+    st.plotly_chart(fig)
+
+    impact_df = pd.DataFrame(impact_df)
+
+    # Rename the columns
+    impact_df = impact_df.rename(columns={
+        "year": "Year",
+        "citations": "Total Citations",
+        "impactful_citations": "Impactful Citations",
+    })
+
+    impact_df = impact_df.groupby('Year').sum().reset_index()
+
+    # Plot the bar chart
+    fig = px.bar(impact_df, x='Year', y='Total Citations', title='Total Papers Cited Each Year',
+                labels={'Year': 'Year', 'Total Citations': 'Total Citations'}
+                )
+    
+    # Update the x-axis range to start at 1990
+    fig.update_layout(
+        xaxis=dict(
+            range=[1989, 2025],
+            tickmode='linear',
+            tick0=1990,
+            dtick=5
         )
     )
 
@@ -270,13 +328,11 @@ elif navigation == 'Akademi & Högskola':
                     (universities2['Code'].str.startswith(selected_institute_code + '.')) & (universities2['Code'].str.count('\.') == 2)]['Department'].tolist(), index=0
                 ) # Avdelning
 
-        #with col5:
-            #selected_topic = st.selectbox('Ämne:', ['Option 2 - A', 'Option 2 - B', 'Option 2 - C']) # Ämne
-
         with col6:
-            if st.checkbox('Compare'):
+            jamfor_box = st.checkbox('Jämför')
+            if jamfor_box:
                 with col8:
-                    selected_university_comp = st.selectbox('Jämför Universitet:', ["All"] + universities2[universities2['Code'].str.count('\.') == 0]['Department'].tolist(), index=0) # Universitet
+                    selected_university_comp = st.selectbox('Jämför med Universitet:', ["All"] + universities2[universities2['Code'].str.count('\.') == 0]['Department'].tolist(), index=0) # Universitet
                     if selected_university_comp != "All":
                         selected_university_code_comp = universities2[universities2['Department'] == selected_university_comp]['Code'].values[0]
                     else:
@@ -286,7 +342,7 @@ elif navigation == 'Akademi & Högskola':
                     if selected_university_comp == "ALL":
                         st.selectbox('Institut:', ["All"])
                     else:
-                        selected_institute_comp = st.selectbox('Jämför Institut:',
+                        selected_institute_comp = st.selectbox('Jämför med Institut:',
                         ["All"] + universities2[
                             (universities2['Code'].str.startswith(selected_university_code_comp + '.')) & (universities2['Code'].str.count('\.')== 1)]['Department'].tolist(), index=0
                         ) # Institut
@@ -299,7 +355,7 @@ elif navigation == 'Akademi & Högskola':
                     if selected_institute_comp == "ALL":
                         st.selectbox('Department:', ["All"])
                     else:
-                        selected_department_comp = st.selectbox('Jämför Department:', 
+                        selected_department_comp = st.selectbox('Jämför med Department:', 
                         ["All"] + universities2[
                             (universities2['Code'].str.startswith(selected_institute_code_comp + '.')) & (universities2['Code'].str.count('\.') == 2)]['Department'].tolist(), index=0
                         ) # Avdelning
@@ -311,34 +367,6 @@ elif navigation == 'Akademi & Högskola':
 
         with col7:
             pass
-
-
-
-    # Function to fetch data from the database based on filters
-        def fetch_data(university, institute, department, from_year, to_year):
-            conditions = []
-            if university != "All":
-                conditions.append(f"affiliations LIKE '%{university}%'")
-            if institute != "All":
-                conditions.append(f"affiliations LIKE '%{institute}%'")
-            if department != "All":
-                conditions.append(f"affiliations LIKE '%{department}%'")
-            conditions.append(f"year >= {from_year}")
-            conditions.append(f"year <= {to_year}")
-
-            where_clause = " AND ".join(conditions)
-
-            query = f"""
-                SELECT year, COUNT(*) as publication_count
-                FROM vetu_paper
-                WHERE {where_clause}
-                GROUP BY year
-                ORDER BY year;
-            """
-            conn = create_conn()
-            df = get_data(conn, query)
-            conn.close()
-            return df
 
     # Fetch the data
     data = fetch_data(selected_university, selected_institute, selected_department, fran_ar, till_ar)
@@ -371,6 +399,8 @@ elif navigation == 'Akademi & Högskola':
             )
         )
         st.plotly_chart(fig)
+        if jamfor_box:
+            st.write("Saknar publikationer för detta val.")
 
     elif not data.empty and not data2.empty:
         # Combine data for side-by-side plotting
@@ -389,47 +419,73 @@ elif navigation == 'Akademi & Högskola':
                 dtick=1
             ),
             legend=dict(
-            orientation='h',  # Horizontal legend
-            yanchor='top',  # Anchor the legend at the top
-            y=-0.2,  # Position the legend below the graph
-            xanchor='center',  # Center the legend horizontally
-            x=0.5)  # Align the legend at the center of the x-axis
-        )
+                orientation='h',  # Horizontal legend
+                yanchor='top',  # Anchor the legend at the top
+                y=-0.2,  # Position the legend below the graph
+                xanchor='center',  # Center the legend horizontally
+                x=0.5  # Align the legend at the center of the x-axis
+            )
+            )
+
+        # Display the figure in Streamlit
         st.plotly_chart(fig)
 
+    
+    # Save the figure to a PDF buffer
+    pdf_buffer = io.BytesIO()
+    fig.write_image(pdf_buffer, format='pdf')
+
+    # Reset the buffer position to the beginning
+    pdf_buffer.seek(0)
+
+    # Add a button to download the figure as a PDF
+    st.download_button(
+        label="Download as PDF",
+        data=pdf_buffer,
+        file_name="vetu_figure.pdf",
+        mime="application/pdf"
+    )
 
 elif navigation == 'Finansiärer':
-    st.title('Överskådliggöra')
+    st.write('Funktionen kommer snart')
 
 elif navigation == 'Tidsskrifter':
 
-    # Create a connection to the database
-    conn = create_conn()
+    # Function to fetch data from the database
+    def fetch_data_tidsskrift():
+        conn = create_conn()
+        query = "SELECT journal_title FROM vetu_paper"
+        df = pd.read_sql_query(query, conn)
+        conn.close()
+        return df
 
-    # SQL query to get unique affiliations
-    affiliations_query = "SELECT DISTINCT affiliations FROM vetu_paper;"
+    # Fetch data
+    df = fetch_data_tidsskrift()
 
-    # Get unique affiliations
-    affiliations_df = get_data(conn, affiliations_query)
-    affiliations = affiliations_df['affiliations'].tolist()
+    # Create search bar
+    search_query = st.text_input("Search for Journal", "")
 
-    # Create a dropdown menu for affiliations
-    selected_affiliation = st.selectbox('Select an Affiliation:', affiliations)
+    # Filter the DataFrame based on the search query
+    if search_query:
+        filtered_df = df[df['journal_title'].str.contains(search_query, case=False, na=False)]
+    else:
+        filtered_df = df
 
-    # SQL query to get the count of publications per year for the selected affiliation
-    query = f"""
-        SELECT year, COUNT(*) AS publication_count
-        FROM vetu_paper
-        WHERE affiliations = '{selected_affiliation}'
-        GROUP BY year
-        ORDER BY year;
-    """
+    # Group by journal and count the number of papers
+    journal_counts = filtered_df['journal_title'].value_counts().reset_index()
+    journal_counts.columns = ['Journal', 'Total Papers']
 
-    # Get data based on the selected affiliation
-    df_year = get_data(conn, query)
+    # Display the grouped DataFrame
+    st.dataframe(journal_counts)
 
-    # Plot the data as a line graph
-    st.plotly_chart(plot_line_graph(df_year, 'year', 'publication_count', f'Number of Publications per Year for {selected_affiliation}'))
+    # Sort by "Total Papers" in descending order and select the top 10
+    top_journals = journal_counts.sort_values(by="Total Papers", ascending=False).head(10)
+
+    # Example plot (optional)
+    if not top_journals.empty:
+        fig = px.bar(top_journals, x='Journal', y='Total Papers', title='Total Papers Published in Each Journal',
+                    labels={'Journal': 'Journal', 'Total Papers': 'Number of Papers'})
+        st.plotly_chart(fig)
 
 elif navigation == 'Forskare':
 
@@ -486,11 +542,90 @@ elif navigation == 'Forskare':
   
 
 elif navigation == 'Innovation':
-    st.title('Överskådliggöra')
+    st.write('Funktionen kommer snart')
 
 elif navigation == 'Region (ALF)':
-    st.title('Överskådliggöra')
+    st.write('Funktionen kommer snart')
 
 elif navigation == 'Sök Artiklar':
-    st.title('Överskådliggöra')
+
+    from pandas.api.types import (
+    is_categorical_dtype,
+    is_datetime64_any_dtype,
+    is_numeric_dtype,
+    is_object_dtype,
+    )
+    #import sqlite3
+
+    def fetch_author_paper_data():
+        conn = create_conn()
+        query = "SELECT title, publication_type, abstract_text, affiliations, pmid FROM vetu_paper"
+        df = pd.read_sql_query(query, conn)
+        conn.close()
+        # Rename columns
+        df.rename(columns={
+            'title': 'Title',
+            'publication_type': 'Type',
+            'abstract_text': 'Topic',
+            'affiliations': 'Affiliation',
+            'pmid': 'PmID'
+        }, inplace=True)
+        return df
+
+    def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+        df = df.copy()
+        for col in df.columns:
+            if is_object_dtype(df[col]):
+                try:
+                    df[col] = pd.to_datetime(df[col])
+                except Exception:
+                    pass
+            if is_datetime64_any_dtype(df[col]):
+                df[col] = df[col].dt.tz_localize(None)
+        
+        modification_container = st.container()
+        with modification_container:
+            to_filter_columns = st.multiselect("Filter articles based on", df.columns)
+            for column in to_filter_columns:
+                left, right = st.columns((1, 20))
+                if column == "Type":
+                    user_type_input = right.selectbox(
+                        f"Select {column}",
+                        options=df[column].unique(),
+                    )
+                    df = df[df[column] == user_type_input]
+                else:
+                    user_text_input = right.text_input(
+                        f"Filter for {column} containing:",
+                    )
+                    if user_text_input:
+                        df = df[df[column].astype(str).str.contains(user_text_input)]
+        return df
+
+    # Fetch data
+    author_paper_df = fetch_author_paper_data()
+
+    # Filter the DataFrame
+    filtered_df = filter_dataframe(author_paper_df)
+
+    search_button = st.button('Search')
+
+    st.write('---')
+
+    # Display matching results
+    if search_button:
+        if not filtered_df.empty:
+            st.text(f"{len(filtered_df)} results")
+            top_50_df = filtered_df.head(50)
+            for index, row in top_50_df.iterrows():
+                st.markdown(f"**Type:** {row['Type']}")
+                st.markdown(f"**Title:** {row['Title']}")
+                st.markdown(f"**Topic:** {row['Topic']}")
+                st.markdown(f"**Affiliation:** {row['Affiliation']}")
+                pubmed_link = f"https://pubmed.ncbi.nlm.nih.gov/{row['PmID']}/"
+                st.markdown(f"[Link to PubMed]({pubmed_link})")
+                st.markdown("---")
+        else:
+            st.write("No matching results found.")
+
 
