@@ -1,3 +1,4 @@
+# Import necessary libraries
 import streamlit as st
 import pandas as pd
 import psycopg2
@@ -7,21 +8,28 @@ from supabase import create_client, Client
 import plotly.io as pio
 import io
 
+# Set the default template for Plotly
+pio.templates.default = "ggplot2"
+
+# Configure the Streamlit page
 st.set_page_config(
-        page_title="Vetu",
-        layout="wide"
+    page_title="Vetu",
+    layout="wide"
 )
 
-
+# File paths for CSV files
 file_path_university = '/Users/xanerc/Documents/Vetu/alf/RegionerAkademier/affiliations_university_norm.csv'
+file_path_university2 = '/Users/xanerc/Downloads/affiliations_university_decoder_list.csv'
+
+# Load university data
 universities = pd.read_csv(file_path_university)
 universities['Code'] = universities['Code'].astype(str)
 
-file_path_university2 = '/Users/xanerc/Downloads/affiliations_university_decoder_list.csv'
+# Load university decoder list data
 universities2 = pd.read_csv(file_path_university2)
 universities2['Code'] = universities2['Code'].astype(str)
 
-
+# Function to create a connection to the PostgreSQL database
 def create_conn():
     conn = psycopg2.connect(
         host='aws-0-eu-central-1.pooler.supabase.com',
@@ -32,15 +40,18 @@ def create_conn():
     )
     return conn
 
+# Function to get data from the database using a query
 def get_data(conn, query):
     df = pd.read_sql(query, conn)
     return df
 
+# Function to plot a histogram
 def plot_distribution(df, column, title):
     fig = px.histogram(df, x=column)
     fig.update_layout(title=title)
     return fig
 
+# Function to plot a line graph
 def plot_line_graph(df, x_column, y_column, title):
     fig = px.line(df, x=x_column, y=y_column, title=title)
     fig.update_layout(title=title)
@@ -71,35 +82,29 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# Create a sidebar
+# Create a sidebar with a header
 st.sidebar.header('Välj verktyg')
 
-# Navigation menu
+# Navigation menu with options
 navigation = st.sidebar.radio('', ('Översikt', 'Akademi & Högskola', 'Region (ALF)', 'Tidsskrifter', 'Forskare', 'Finansiärer', 'Innovation', 'Sök Artiklar'))
 
+# Display the selected navigation title
 st.title(navigation)
 st.write('---')
 
-if navigation == 'Översikt':
 
+if navigation == 'Översikt':
+    # Create two columns for the layout
     col1, col2 = st.columns(2)
 
+    # Column 1: Impact Summary
     with col1:
-        # Function to fetch data from the database
         def fetch_impact_data():
             conn = create_conn()
             query = "SELECT citations, year, impactful_citations FROM vetu_impact"
             df = pd.read_sql_query(query, conn)
             conn.close()
             return df
-
-        # Fetch data
-        impact_df = fetch_impact_data()
-
-        # Calculate totals
-        total_citations = impact_df['citations'].sum()
-        total_impactful_citations = impact_df['impactful_citations'].sum()
-        total_papers = impact_df['citations'].count()
 
         def fetch_impact_data_author():
             conn = create_conn()
@@ -108,12 +113,6 @@ if navigation == 'Översikt':
             conn.close()
             return df
 
-        # Fetch data
-        impact_df_author = pd.DataFrame(fetch_impact_data_author())
-
-        total_authors = len(pd.unique(impact_df_author['name']))
-
-        # Function to fetch data from the database
         def fetch_citation_data():
             conn = create_conn()
             query = "SELECT year, citations FROM vetu_impact"
@@ -122,7 +121,15 @@ if navigation == 'Översikt':
             return df
 
         # Fetch data
+        impact_df = fetch_impact_data()
+        impact_df_author = fetch_impact_data_author()
         citation_df = fetch_citation_data()
+
+        # Calculate totals
+        total_citations = impact_df['citations'].sum()
+        total_impactful_citations = impact_df['impactful_citations'].sum()
+        total_papers = impact_df['citations'].count()
+        total_authors = impact_df_author['name'].nunique()
 
         # Categorize papers based on citation counts
         citation_df['citation_category'] = pd.cut(
@@ -131,7 +138,7 @@ if navigation == 'Översikt':
             labels=['≤5 Citations', '6-10 Citations', '>10 Citations']
         )
 
-        # Count the total number of papers with 10 or fewer citations
+        # Calculate citation statistics
         total_papers_cited_10_or_less = citation_df[citation_df['citation_category'].isin(['≤5 Citations', '6-10 Citations'])].shape[0]
         percentage_papers_cited_10_or_less = round(total_papers_cited_10_or_less * 100 / total_papers, 2)
 
@@ -151,11 +158,11 @@ if navigation == 'Översikt':
         </div>
         """, unsafe_allow_html=True)
 
-        # Add a small space
+        # Add a separator
         st.write('---')
 
+    # Column 2: Papers Published Each Year
     with col2:
-        # Function to fetch data from the database
         def fetch_papers_per_year():
             conn = create_conn()
             query = "SELECT year FROM vetu_paper"
@@ -171,10 +178,14 @@ if navigation == 'Översikt':
         papers_per_year.columns = ['Year', 'Total Papers']
         papers_per_year = papers_per_year.sort_values('Year')
 
-        # Plot the bar chart
-        fig = px.bar(papers_per_year, x='Year', y='Total Papers', title='Total Papers Published Each Year',
-                    labels={'Year': 'Year', 'Total Papers': 'Number of Papers'}
-                    )
+        # Plot the bar chart for total papers published each year
+        fig = px.bar(
+            papers_per_year, 
+            x='Year', 
+            y='Total Papers', 
+            title='Total Papers Published Each Year',
+            labels={'Year': 'Year', 'Total Papers': 'Number of Papers'}
+        )
         
         # Update the x-axis range to start at 1990
         fig.update_layout(
@@ -201,9 +212,15 @@ if navigation == 'Översikt':
     custom_colors = ['#F60909', '#FFF710', '#11C618']  # Red, yellow, green
 
     # Plot the percentage composition as a stacked bar chart
-    fig = px.bar(pivot_df, x=pivot_df.index, y=pivot_df.columns, title='Percentage of Papers by Citation Counts (1990-2024)',
-                labels={'value': 'Percentage', 'year': 'Year'}, 
-                barmode='stack', color_discrete_sequence=custom_colors)
+    fig = px.bar(
+        pivot_df, 
+        x=pivot_df.index, 
+        y=pivot_df.columns, 
+        title='Percentage of Papers by Citation Counts (1990-2024)',
+        labels={'value': 'Percentage', 'year': 'Year'}, 
+        barmode='stack', 
+        color_discrete_sequence=custom_colors
+    )
 
     # Update the x-axis range to start at 1990
     fig.update_layout(
@@ -214,29 +231,29 @@ if navigation == 'Översikt':
             dtick=1
         ),
         yaxis=dict(
-            title='Percentage'),
-            legend_title_text='Citation Groups'
-        
+            title='Percentage'
+        ),
+        legend_title_text='Citation Groups'
     )
 
     # Display the plot in Streamlit
     st.plotly_chart(fig)
 
-    impact_df = pd.DataFrame(impact_df)
-
-    # Rename the columns
+    # Prepare the impact data for plotting
     impact_df = impact_df.rename(columns={
         "year": "Year",
         "citations": "Total Citations",
         "impactful_citations": "Impactful Citations",
-    })
+    }).groupby('Year').sum().reset_index()
 
-    impact_df = impact_df.groupby('Year').sum().reset_index()
-
-    # Plot the bar chart
-    fig = px.bar(impact_df, x='Year', y='Total Citations', title='Total Papers Cited Each Year',
-                labels={'Year': 'Year', 'Total Citations': 'Total Citations'}
-                )
+    # Plot the bar chart for total citations each year
+    fig = px.bar(
+        impact_df, 
+        x='Year', 
+        y='Total Citations', 
+        title='Total Papers Cited Each Year',
+        labels={'Year': 'Year', 'Total Citations': 'Total Citations'}
+    )
     
     # Update the x-axis range to start at 1990
     fig.update_layout(
@@ -250,6 +267,7 @@ if navigation == 'Översikt':
 
     # Display the plot in Streamlit
     st.plotly_chart(fig)
+
 
 elif navigation == 'Akademi & Högskola':
 
@@ -424,7 +442,8 @@ elif navigation == 'Akademi & Högskola':
                 y=-0.2,  # Position the legend below the graph
                 xanchor='center',  # Center the legend horizontally
                 x=0.5  # Align the legend at the center of the x-axis
-            )
+            ),
+            legend_title_text='Ursprung'
             )
 
         # Display the figure in Streamlit
@@ -451,41 +470,158 @@ elif navigation == 'Finansiärer':
 
 elif navigation == 'Tidsskrifter':
 
+    st.subheader('Top journals by filter')
+
+    from pandas.api.types import (
+        is_categorical_dtype,
+        is_datetime64_any_dtype,
+        is_numeric_dtype,
+        is_object_dtype,
+    )
+    
+
     # Function to fetch data from the database
     def fetch_data_tidsskrift():
         conn = create_conn()
-        query = "SELECT journal_title FROM vetu_paper"
+        query = "SELECT title, publication_type, abstract_text, affiliations, journal_title FROM vetu_paper"
         df = pd.read_sql_query(query, conn)
         conn.close()
+        # Rename columns
+        df.rename(columns={
+            'title': 'Title',
+            'publication_type': 'Type',
+            'abstract_text': 'Topic',
+            'affiliations': 'Affiliation',
+            'journal_title': 'Journal'
+        }, inplace=True)
+        return df
+
+    def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+        df = df.copy()
+        for col in df.columns:
+            if is_object_dtype(df[col]):
+                try:
+                    df[col] = pd.to_datetime(df[col])
+                except Exception:
+                    pass
+            if is_datetime64_any_dtype(df[col]):
+                df[col] = df[col].dt.tz_localize(None)
+        
+        modification_container = st.container()
+        with modification_container:
+            filter_columns = [col for col in df.columns if col != 'Journal']
+            to_filter_columns = st.multiselect("Filter results based on", filter_columns)
+            for column in to_filter_columns:
+                left, right = st.columns((1, 20))
+                if column == "Type":
+                    user_type_input = right.selectbox(
+                        f"Select {column}",
+                        options=df[column].unique(),
+                    )
+                    df = df[df[column] == user_type_input]
+                elif is_categorical_dtype(df[column]) or df[column].nunique() < 50:
+                    user_cat_input = right.multiselect(
+                        f"Values for {column}",
+                        df[column].unique(),
+                        default=list(df[column].unique()),
+                    )
+                    df = df[df[column].isin(user_cat_input)]
+                elif is_numeric_dtype(df[column]):
+                    _min = float(df[column].min())
+                    _max = float(df[column].max())
+                    step = (_max - _min) / 100
+                    user_num_input = right.slider(
+                        f"Values for {column}",
+                        min_value=_min,
+                        max_value=_max,
+                        value=(_min, _max),
+                        step=step,
+                    )
+                    df = df[df[column].between(*user_num_input)]
+                elif is_datetime64_any_dtype(df[column]):
+                    user_date_input = right.date_input(
+                        f"Values for {column}",
+                        value=(
+                            df[column].min(),
+                            df[column].max(),
+                        ),
+                    )
+                    if len(user_date_input) == 2:
+                        user_date_input = tuple(map(pd.to_datetime, user_date_input))
+                        start_date, end_date = user_date_input
+                        df = df.loc[df[column].between(start_date, end_date)]
+                else:
+                    user_text_input = right.text_input(
+                        f"Filter for {column} containing:",
+                    )
+                    if user_text_input:
+                        df = df[df[column].astype(str).str.contains(user_text_input)]
         return df
 
     # Fetch data
     df = fetch_data_tidsskrift()
 
-    # Create search bar
-    search_query = st.text_input("Search for Journal", "")
+    # Filter the DataFrame
+    filtered_df = filter_dataframe(df)
 
-    # Filter the DataFrame based on the search query
-    if search_query:
-        filtered_df = df[df['journal_title'].str.contains(search_query, case=False, na=False)]
+    # Search button
+    search_button = st.button('Search')
+
+    st.write(' ')
+
+    # Display matching results and journal counts
+    if search_button:
+        if not filtered_df.empty:
+            # Group by journal and count the number of papers
+            journal_counts = filtered_df['Journal'].value_counts().reset_index()
+            journal_counts.index = journal_counts.index + 1
+            journal_counts.columns = ['Journal', 'Total Papers']
+
+            # Display the grouped DataFrame
+            st.write(f"Number of results: {len(filtered_df)}")
+            st.dataframe(journal_counts.head(50), width=1200, height=400)
+
+            # Function to truncate journal names
+            def truncate_journal_name(name, max_length=40):
+                if len(name) > max_length:
+                    return name[:max_length] + '...'
+                return name
+
+            # Apply truncation to the 'Journal' column
+            journal_counts['Truncated Journal'] = journal_counts['Journal'].apply(truncate_journal_name)
+
+            # Sort by "Total Papers" in descending order and select the top 10
+            top_journals = journal_counts.sort_values(by="Total Papers", ascending=False).head(10)
+
+            # Example plot (optional)
+            if not top_journals.empty:
+                fig = px.bar(top_journals, x='Truncated Journal', y='Total Papers', title='Total Papers Published in Each Journal',
+                            labels={'Journal': 'Journal', 'Total Papers': 'Number of Papers'})
+                fig.update_layout(width=2000, height=600)
+                st.plotly_chart(fig)
+                st.write('---')
+        else:
+            st.write("No matching results found.")
+            st.write('---')
     else:
-        filtered_df = df
+        st.write('Please select filters.')
+        st.write(' ')
+        st.write(' ')
+        st.write(' ')
+        st.write(' ')
+        st.write(' ')
+        st.write('---')
+
+    st.subheader('Top journals overall')
+    st.write(' ')
 
     # Group by journal and count the number of papers
-    journal_counts = filtered_df['journal_title'].value_counts().reset_index()
-    journal_counts.columns = ['Journal', 'Total Papers']
+    df_counts = df['Journal'].value_counts().reset_index()
+    df_counts.index = df_counts.index + 1
+    df_counts.columns = ['Journal', 'Total Papers']
 
-    # Display the grouped DataFrame
-    st.dataframe(journal_counts)
-
-    # Sort by "Total Papers" in descending order and select the top 10
-    top_journals = journal_counts.sort_values(by="Total Papers", ascending=False).head(10)
-
-    # Example plot (optional)
-    if not top_journals.empty:
-        fig = px.bar(top_journals, x='Journal', y='Total Papers', title='Total Papers Published in Each Journal',
-                    labels={'Journal': 'Journal', 'Total Papers': 'Number of Papers'})
-        st.plotly_chart(fig)
+    # Apply truncation to the 'Journal' column
+    st.dataframe(df_counts, width=1200, height=800)
 
 elif navigation == 'Forskare':
 
@@ -499,6 +635,9 @@ elif navigation == 'Forskare':
 
     # Fetch data
     df = fetch_data_forskare()
+
+    # First Subtitle
+    st.subheader('Jämför forskare efter affiliation')
 
     # Create search bar
     search_query = st.text_input("Search within data", "")
@@ -521,15 +660,16 @@ elif navigation == 'Forskare':
     filtered_df["Unique Author"] = filtered_df["Author"] + " (" + filtered_df.index.astype(str) + ")"
 
     # Reset the index and drop the original index
-    filtered_df = filtered_df.sort_values(by="Total Citations", ascending=False)
+    filtered_df = filtered_df.sort_values(by="Total Citations", ascending=False).head(50)
     filtered_df = filtered_df.reset_index(drop=True)
+    filtered_df.index = filtered_df.index + 1
 
     # Select relevant columns for display
     columns_to_display = ["Author", "Total Citations", "Impactful Citations", "Number of Papers", "Affiliation"]
     filtered_df1 = filtered_df[columns_to_display]
 
     # Display filtered DataFrame
-    st.dataframe(filtered_df1)
+    st.dataframe(filtered_df1, width=1600, height=300)
 
     # Sort by "Total Citations" in descending order and select the top 10
     filtered_df2 = filtered_df.sort_values(by="Total Citations", ascending=False).head(20)
@@ -539,6 +679,75 @@ elif navigation == 'Forskare':
         fig = px.bar(filtered_df2, x='Unique Author', y='Total Citations', title='Citations by Author',
                     labels={'Unique Author': 'Author', 'Citations': 'Number of Citations'})
         st.plotly_chart(fig)
+
+    # Second Subtitle
+    st.write('---')
+    st.subheader('Jämför individuella forskare')
+
+    # Allow users to select authors
+    selected_authors = st.multiselect('Search authors to compare:', filtered_df1['Author'].unique())
+
+    # Filter the DataFrame based on selected authors
+    if selected_authors:
+        selected_data = filtered_df1[filtered_df1['Author'].isin(selected_authors)]
+
+        # Plot the selected data
+        fig = px.bar(selected_data, x='Author', y='Total Citations', title='Total Citations by Selected Authors',
+                    labels={'Author': 'Author', 'Total Citations': 'Number of Citations'})
+        st.plotly_chart(fig)
+    else:
+        st.write("No authors selected.")
+
+    #Third subtitle
+    st.write('---')
+    st.subheader('Topplista efter antal citat')
+
+    # Fetch data
+    df_topplista = fetch_data_forskare()
+    # Rename the columns
+    df_topplista = df_topplista.rename(columns={
+        "name": "Author",
+        "citations": "Total Citations",
+        "impactful_citations": "Impactful Citations",
+        "paper_count": "Number of Papers",
+        "affiliations": "Affiliation"
+    })
+
+    # Reset the index and drop the original index
+    df_topplista = df_topplista.sort_values(by="Total Citations", ascending=False).head(200)
+    df_topplista = df_topplista.reset_index(drop=True)
+    df_topplista.index = df_topplista.index + 1
+
+    # Show topplista
+    # Select relevant columns for display
+    columns_to_display = ["Author", "Total Citations", "Impactful Citations", "Number of Papers", "Affiliation"]
+    df_topplista = df_topplista[columns_to_display]
+
+    # Display filtered DataFrame
+    st.dataframe(df_topplista, width=1600, height=1600)
+
+
+    # Create an empty portion of the page
+    st.write('  ')
+    st.write('  ')
+    st.write('  ')
+    st.write('  ')
+    st.write('  ')
+    st.write('  ')
+    st.write('  ')
+    st.write('  ')
+    st.write('  ')
+    st.write('  ')
+    st.write('  ')
+    st.write('  ')
+    st.write('  ')
+    st.write('  ')
+    st.write('  ')
+    st.write('  ')
+    st.write('  ')
+    st.write('  ')
+    st.write('  ')
+    st.write('  ')
   
 
 elif navigation == 'Innovation':
@@ -559,16 +768,18 @@ elif navigation == 'Sök Artiklar':
 
     def fetch_author_paper_data():
         conn = create_conn()
-        query = "SELECT title, publication_type, abstract_text, affiliations, pmid FROM vetu_paper"
+        query = "SELECT title, publication_type, abstract_text, journal_title, affiliations, pmid FROM vetu_paper"
         df = pd.read_sql_query(query, conn)
         conn.close()
         # Rename columns
         df.rename(columns={
             'title': 'Title',
-            'publication_type': 'Type',
+            'publication_type': 'Type of paper',
             'abstract_text': 'Topic',
+            'journal_title': 'Journal',
             'affiliations': 'Affiliation',
             'pmid': 'PmID'
+            
         }, inplace=True)
         return df
 
@@ -588,7 +799,7 @@ elif navigation == 'Sök Artiklar':
             to_filter_columns = st.multiselect("Filter articles based on", df.columns)
             for column in to_filter_columns:
                 left, right = st.columns((1, 20))
-                if column == "Type":
+                if column == "Type of paper":
                     user_type_input = right.selectbox(
                         f"Select {column}",
                         options=df[column].unique(),
@@ -618,9 +829,10 @@ elif navigation == 'Sök Artiklar':
             st.text(f"{len(filtered_df)} results")
             top_50_df = filtered_df.head(50)
             for index, row in top_50_df.iterrows():
-                st.markdown(f"**Type:** {row['Type']}")
+                st.markdown(f"**Type of paper:** {row['Type of paper']}")
                 st.markdown(f"**Title:** {row['Title']}")
                 st.markdown(f"**Topic:** {row['Topic']}")
+                st.markdown(f"**Journal:** {row['Journal']}")
                 st.markdown(f"**Affiliation:** {row['Affiliation']}")
                 pubmed_link = f"https://pubmed.ncbi.nlm.nih.gov/{row['PmID']}/"
                 st.markdown(f"[Link to PubMed]({pubmed_link})")
