@@ -8,14 +8,77 @@ from supabase import create_client, Client
 import plotly.io as pio
 import io
 
-# Set the default template for Plotly
-pio.templates.default = "ggplot2"
-
 # Configure the Streamlit page
 st.set_page_config(
     page_title="Vetu",
     layout="wide"
 )
+#00A3FF
+# Custom CSS to create a banner, ensure it's in front of the sidebar, and style the radio buttons
+st.markdown("""
+    <style>
+    /* Banner styling */
+    .banner {
+        background-color: #00A3FF; /* Change this to your desired background color */
+        padding: 10px;
+        padding-left: 315px;
+        text-align: Left;
+        color: white;
+        font-size: 50px;
+        font-weight: 500;
+        font-family: 'Futura', sans-serif; /* Change the font */
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 100%;
+        z-index: 1000; /* Ensure the banner is in front of other elements */
+    }
+    /* Adjust the padding of the main content to account for the banner */
+    .main .block-container {
+        padding-top: 80px; /* Adjust this value if necessary to avoid overlap with banner */
+    }
+    /* Ensure sidebar is not affected */
+    section[data-testid="stSidebar"] {
+        z-index: 1; /* Ensure sidebar is behind the banner */
+    }
+    /* Radio button styling */
+    div.stRadio > div {
+        display: flex;
+        flex-direction: column; /* Arrange the radio buttons in a column */
+    }
+    div.stRadio > div > label {
+        display: block;
+        padding: 10px 0;
+        cursor: pointer;
+        text-decoration: none; /* Remove underline */
+        color: #007bff; /* Link color */
+        font-weight: bold;
+        font-size: 42px; /* Increase text size */
+        font-family: 'Futura', sans-serif; /* Change the font */
+    }
+    div.stRadio > div > label > input {
+        display: none; /* Hide the radio input */
+    }
+    div.stRadio > div > label > div:nth-of-type(1) {
+        display: none; /* Hide the default radio button */
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+# Banner with title
+st.markdown('<div class="banner">VETU Medicinsk Forskning</div>', unsafe_allow_html=True)
+
+# Custom CSS to make the search button wider
+st.markdown("""
+    <style>
+    .stButton button {
+        width: 200px; /* Adjust the width as needed */
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+# Set the default template for Plotly
+pio.templates.default = "ggplot2"
 
 # File paths for CSV files
 file_path_university = '/Users/xanerc/Documents/Vetu/alf/RegionerAkademier/affiliations_university_norm.csv'
@@ -57,38 +120,16 @@ def plot_line_graph(df, x_column, y_column, title):
     fig.update_layout(title=title)
     return fig
 
-# Inject custom CSS to style the radio buttons as links and increase text size
-st.markdown("""
-    <style>
-    div.stRadio > div {
-        display: flex;
-        flex-direction: column;
-    }
-    div.stRadio > div > label {
-        display: block;
-        padding: 10px 0;
-        cursor: pointer;
-        text-decoration: none;
-        color: #007bff;
-        font-weight: bold;
-        font-size: 42px;
-    }
-    div.stRadio > div > label > input {
-        display: none;
-    }
-    div.stRadio > div > label > div:nth-of-type(1) {
-        display: none;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
 # Create a sidebar with a header
+st.sidebar.header(' ')
+st.sidebar.header(' ')
 st.sidebar.header('Välj verktyg')
 
 # Navigation menu with options
 navigation = st.sidebar.radio('', ('Översikt', 'Akademi & Högskola', 'Region (ALF)', 'Tidsskrifter', 'Forskare', 'Finansiärer', 'Innovation', 'Sök Artiklar'))
 
 # Display the selected navigation title
+st.write(' ')
 st.title(navigation)
 st.write('---')
 
@@ -418,7 +459,7 @@ elif navigation == 'Akademi & Högskola':
         )
         st.plotly_chart(fig)
         if jamfor_box:
-            st.write("Saknar publikationer för detta val.")
+            st.write("Saknar publikationer för andra valet.")
 
     elif not data.empty and not data2.empty:
         # Combine data for side-by-side plotting
@@ -555,7 +596,7 @@ elif navigation == 'Tidsskrifter':
                         f"Filter for {column} containing:",
                     )
                     if user_text_input:
-                        df = df[df[column].astype(str).str.contains(user_text_input)]
+                        df = df[df[column].astype(str).str.contains(user_text_input, case=False)]
         return df
 
     # Fetch data
@@ -810,7 +851,7 @@ elif navigation == 'Sök Artiklar':
                         f"Filter for {column} containing:",
                     )
                     if user_text_input:
-                        df = df[df[column].astype(str).str.contains(user_text_input)]
+                        df = df[df[column].astype(str).str.contains(user_text_input, case=False)]
         return df
 
     # Fetch data
