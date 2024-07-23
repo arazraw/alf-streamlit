@@ -19,14 +19,14 @@ st.markdown("""
     <style>
     /* Banner styling */
     .banner {
-        background-color: #00A3FF; /* Change this to your desired background color */
-        padding: 10px;
+        background-color: #468499; /* Change this to your desired background color */
+        padding: 25px;
         padding-left: 315px;
         text-align: Left;
         color: white;
-        font-size: 50px;
-        font-weight: 500;
-        font-family: 'Futura', sans-serif; /* Change the font */
+        font-size: 60px;
+        font-weight: 600;
+        font-family: 'Gill sans', sans-serif; /* Change the font */
         position: fixed;
         top: 0;
         right: 0;
@@ -66,7 +66,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # Banner with title
-st.markdown('<div class="banner">VETU Medicinsk Forskning</div>', unsafe_allow_html=True)
+st.markdown('<div class="banner">VETU - Medicinsk Forskning</div>', unsafe_allow_html=True)
 
 # Custom CSS to make the search button wider
 st.markdown("""
@@ -76,6 +76,20 @@ st.markdown("""
     }
     </style>
     """, unsafe_allow_html=True)
+
+# Remove top streamlit banner
+st.markdown("""
+    <style>
+        .reportview-container {
+            margin-top: -2em;
+        }
+        #MainMenu {visibility: hidden;}
+        .stDeployButton {display:none;}
+        header {visibility: hidden;}
+        footer {visibility: hidden;}
+        #stDecoration {display:none;}
+    </style>
+""", unsafe_allow_html=True)
 
 # Set the default template for Plotly
 pio.templates.default = "ggplot2"
@@ -430,37 +444,35 @@ elif navigation == 'Akademi & Högskola':
     # Fetch the data
     data = fetch_data(selected_university, selected_institute, selected_department, fran_ar, till_ar)
 
-    def plot_data(data):
-        if data.empty:
-            st.write("No data available for the selected criteria.")
-        else:
-            fig = px.bar(data, x='year', y='publication_count', title='Publications Over Time',
-              labels={'year': 'Year', 'publication_count': 'Number of Publications'})
-            fig.update_layout(
-            xaxis=dict(
-                tickmode='linear',
-                tick0=fran_ar,
-                dtick=1,
-                range=[fran_ar-0.5, till_ar+0.5])  # Use selected from_year and to_year for range
-            )
-            st.plotly_chart(fig)
-
-    # Plot the data
-    if data2.empty:
-        # Plot only data
-        fig = px.bar(data, x='year', y='publication_count', title='Publications Over Time',
-                    labels={'year': 'Year', 'publication_count': 'Number of Publications'})
+    
+    if data.empty and not data2.empty:
+        fig = px.bar(data2, x='year', y='publication_count', title='Publications Over Time',
+            labels={'year': 'Year', 'publication_count': 'Number of Publications'})
         fig.update_layout(
-            xaxis=dict(
-                tickmode='linear',
-                tick0=data['year'].min(),
-                dtick=1
-            )
+        xaxis=dict(
+            tickmode='linear',
+            tick0=fran_ar,
+            dtick=1,
+            range=[fran_ar-0.5, till_ar+0.5])  # Use selected from_year and to_year for range
+        )
+        st.plotly_chart(fig)
+        st.write("No data available for the first selection.")
+    elif data2.empty and not data.empty:
+        fig = px.bar(data, x='year', y='publication_count', title='Publications Over Time',
+            labels={'year': 'Year', 'publication_count': 'Number of Publications'})
+        fig.update_layout(
+        xaxis=dict(
+            tickmode='linear',
+            tick0=fran_ar,
+            dtick=1,
+            range=[fran_ar-0.5, till_ar+0.5])  # Use selected from_year and to_year for range
         )
         st.plotly_chart(fig)
         if jamfor_box:
-            st.write("Saknar publikationer för andra valet.")
-
+            st.write("No data available for second selection.")
+    elif data.empty and data2.empty:
+        st.write("No data available for either selection.")
+        fig = None
     elif not data.empty and not data2.empty:
         # Combine data for side-by-side plotting
         data['Type'] = f"{selected_university} - {selected_institute} - {selected_department}"
@@ -490,21 +502,22 @@ elif navigation == 'Akademi & Högskola':
         # Display the figure in Streamlit
         st.plotly_chart(fig)
 
-    
-    # Save the figure to a PDF buffer
-    pdf_buffer = io.BytesIO()
-    fig.write_image(pdf_buffer, format='pdf')
+    # Check if 'fig' is defined and is an instance of a Plotly figure
+    if fig is not None:
+        # Save the figure to a PDF buffer
+        pdf_buffer = io.BytesIO()
+        fig.write_image(pdf_buffer, format='pdf')
 
-    # Reset the buffer position to the beginning
-    pdf_buffer.seek(0)
+        # Reset the buffer position to the beginning
+        pdf_buffer.seek(0)
 
-    # Add a button to download the figure as a PDF
-    st.download_button(
-        label="Download as PDF",
-        data=pdf_buffer,
-        file_name="vetu_figure.pdf",
-        mime="application/pdf"
-    )
+        # Add a button to download the figure as a PDF
+        st.download_button(
+            label="Download as PDF",
+            data=pdf_buffer,
+            file_name="vetu_figure.pdf",
+            mime="application/pdf"
+        )
 
 elif navigation == 'Finansiärer':
     st.write('Funktionen kommer snart')
