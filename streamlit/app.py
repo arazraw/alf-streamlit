@@ -77,19 +77,19 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# Remove top streamlit banner
-st.markdown("""
-    <style>
-        .reportview-container {
-            margin-top: -2em;
-        }
-        #MainMenu {visibility: hidden;}
-        .stDeployButton {display:none;}
-        header {visibility: hidden;}
-        footer {visibility: hidden;}
-        #stDecoration {display:none;}
-    </style>
-""", unsafe_allow_html=True)
+#Remove top streamlit banner
+# st.markdown("""
+#     <style>
+#         .reportview-container {
+#             margin-top: -2em;
+#         }
+#         #MainMenu {visibility: hidden;}
+#         .stDeployButton {display:none;}
+#         header {visibility: hidden;}
+#         footer {visibility: hidden;}
+#         #stDecoration {display:none;}
+#     </style>
+# """, unsafe_allow_html=True)
 
 # Set the default template for Plotly
 pio.templates.default = "ggplot2"
@@ -117,23 +117,6 @@ def create_conn():
     )
     return conn
 
-# Function to get data from the database using a query
-def get_data(conn, query):
-    df = pd.read_sql(query, conn)
-    return df
-
-# Function to plot a histogram
-def plot_distribution(df, column, title):
-    fig = px.histogram(df, x=column)
-    fig.update_layout(title=title)
-    return fig
-
-# Function to plot a line graph
-def plot_line_graph(df, x_column, y_column, title):
-    fig = px.line(df, x=x_column, y=y_column, title=title)
-    fig.update_layout(title=title)
-    return fig
-
 # Create a sidebar with a header
 st.sidebar.header(' ')
 st.sidebar.header(' ')
@@ -149,36 +132,34 @@ st.write('---')
 
 
 if navigation == 'Översikt':
+
+    # Get all the data
+    def fetch_impact_citation_data():
+            conn = create_conn()
+            citation_impact_query = "SELECT citations, year, impactful_citations FROM vetu_impact"
+            author_query = "SELECT name FROM vetu_author"
+            
+            citation_impact_df = pd.read_sql_query(citation_impact_query, conn)
+            author_df = pd.read_sql_query(author_query, conn)
+
+            citation_columns = ['year', 'citations']
+            impact_columns = ['citations', 'year', 'impactful_citations']
+            
+            citation_df = citation_impact_df[citation_columns]
+            impact_df = citation_impact_df[impact_columns]
+
+
+            conn.close()
+            return impact_df, citation_df, author_df
+    
     # Create two columns for the layout
     col1, col2 = st.columns(2)
 
     # Column 1: Impact Summary
     with col1:
-        def fetch_impact_data():
-            conn = create_conn()
-            query = "SELECT citations, year, impactful_citations FROM vetu_impact"
-            df = pd.read_sql_query(query, conn)
-            conn.close()
-            return df
-
-        def fetch_impact_data_author():
-            conn = create_conn()
-            query = "SELECT name FROM vetu_author"
-            df = pd.read_sql_query(query, conn)
-            conn.close()
-            return df
-
-        def fetch_citation_data():
-            conn = create_conn()
-            query = "SELECT year, citations FROM vetu_impact"
-            df = pd.read_sql_query(query, conn)
-            conn.close()
-            return df
 
         # Fetch data
-        impact_df = fetch_impact_data()
-        impact_df_author = fetch_impact_data_author()
-        citation_df = fetch_citation_data()
+        impact_df, citation_df, impact_df_author = fetch_impact_citation_data()
 
         # Calculate totals
         total_citations = impact_df['citations'].sum()
@@ -309,7 +290,7 @@ if navigation == 'Översikt':
         title='Total Papers Cited Each Year',
         labels={'Year': 'Year', 'Total Citations': 'Total Citations'}
     )
-    
+
     # Update the x-axis range to start at 1990
     fig.update_layout(
         xaxis=dict(
@@ -348,7 +329,7 @@ elif navigation == 'Akademi & Högskola':
             ORDER BY year;
         """
         conn = create_conn()
-        df = get_data(conn, query)
+        df = pd.read_sql(query, conn)
         conn.close()
         return df
 
@@ -474,30 +455,41 @@ elif navigation == 'Akademi & Högskola':
         st.write("No data available for either selection.")
         fig = None
     elif not data.empty and not data2.empty:
-        # Combine data for side-by-side plotting
-        data['Type'] = f"{selected_university} - {selected_institute} - {selected_department}"
-        data2['Type'] = f"{selected_university_comp} - {selected_institute_comp} - {selected_department_comp}"
-
-        combined_data = pd.concat([data, data2])
-
-        fig = px.bar(combined_data, x='year', y='publication_count', color='Type', barmode='group',
-                    title='Publications Over Time',
-                    labels={'year': 'Year', 'publication_count': 'Number of Publications'})
-        fig.update_layout(
+        if selected_university == selected_university_comp and selected_institute == selected_institute_comp and selected_department == selected_department_comp:
+            fig = px.bar(data, x='year', y='publication_count', title='Publications Over Time',
+            labels={'year': 'Year', 'publication_count': 'Number of Publications'})
+            fig.update_layout(
             xaxis=dict(
                 tickmode='linear',
-                tick0=min(data['year'].min(), data2['year'].min()),
-                dtick=1
-            ),
-            legend=dict(
-                orientation='h',  # Horizontal legend
-                yanchor='top',  # Anchor the legend at the top
-                y=-0.2,  # Position the legend below the graph
-                xanchor='center',  # Center the legend horizontally
-                x=0.5  # Align the legend at the center of the x-axis
-            ),
-            legend_title_text='Ursprung'
+                tick0=fran_ar,
+                dtick=1,
+                range=[fran_ar-0.5, till_ar+0.5])  # Use selected from_year and to_year for range
             )
+        else:
+            # Combine data for side-by-side plotting
+            data['Type'] = f"{selected_university} - {selected_institute} - {selected_department}"
+            data2['Type'] = f"{selected_university_comp} - {selected_institute_comp} - {selected_department_comp}"
+
+            combined_data = pd.concat([data, data2])
+
+            fig = px.bar(combined_data, x='year', y='publication_count', color='Type', barmode='group',
+                        title='Publications Over Time',
+                        labels={'year': 'Year', 'publication_count': 'Number of Publications'})
+            fig.update_layout(
+                xaxis=dict(
+                    tickmode='linear',
+                    tick0=min(data['year'].min(), data2['year'].min()),
+                    dtick=1
+                ),
+                legend=dict(
+                    orientation='h',  # Horizontal legend
+                    yanchor='top',  # Anchor the legend at the top
+                    y=-0.2,  # Position the legend below the graph
+                    xanchor='center',  # Center the legend horizontally
+                    x=0.5  # Align the legend at the center of the x-axis
+                ),
+                legend_title_text='Ursprung'
+                )
 
         # Display the figure in Streamlit
         st.plotly_chart(fig)
@@ -537,7 +529,7 @@ elif navigation == 'Tidsskrifter':
     # Function to fetch data from the database
     def fetch_data_tidsskrift():
         conn = create_conn()
-        query = "SELECT title, publication_type, abstract_text, affiliations, journal_title FROM vetu_paper"
+        query = "SELECT title, publication_type, abstract_text, affiliation_codes, journal_title, year FROM vetu_paper"
         df = pd.read_sql_query(query, conn)
         conn.close()
         # Rename columns
@@ -545,8 +537,9 @@ elif navigation == 'Tidsskrifter':
             'title': 'Title',
             'publication_type': 'Type',
             'abstract_text': 'Topic',
-            'affiliations': 'Affiliation',
-            'journal_title': 'Journal'
+            'affiliation_codes': 'Affiliation',
+            'journal_title': 'Journal',
+            'year': 'Year'
         }, inplace=True)
         return df
 
@@ -564,7 +557,7 @@ elif navigation == 'Tidsskrifter':
         modification_container = st.container()
         with modification_container:
             filter_columns = [col for col in df.columns if col != 'Journal']
-            to_filter_columns = st.multiselect("Filter results based on", filter_columns)
+            to_filter_columns = st.multiselect("Filter results based on", filter_columns, default=['Year', 'Affiliation'])
             for column in to_filter_columns:
                 left, right = st.columns((1, 20))
                 if column == "Type":
@@ -573,6 +566,50 @@ elif navigation == 'Tidsskrifter':
                         options=df[column].unique(),
                     )
                     df = df[df[column] == user_type_input]
+                elif column == "Affiliation":
+                        
+                    selected_university = right.selectbox('Universitet:', ["All"] + universities2[universities2['Code'].str.count('\.') == 0]['Department'].tolist(), index=0) # Universitet
+                    if selected_university != "All":
+                        selected_university_code = universities2[universities2['Department'] == selected_university]['Code'].values[0]
+                        selected_institute = right.selectbox('Institut:',
+                        ["All"] + universities2[
+                            (universities2['Code'].str.startswith(selected_university_code + '.')) & (universities2['Code'].str.count('\.')== 1)]['Department'].tolist(), index=0
+                        ) # Institut
+                        if selected_institute != "All":
+                            selected_institute_code = universities2[universities2['Department'] == selected_institute]['Code'].values[0]
+                            selected_department = right.selectbox('Department:', 
+                            ["All"] + universities2[
+                                (universities2['Code'].str.startswith(selected_institute_code + '.')) & (universities2['Code'].str.count('\.') == 2)]['Department'].tolist(), index=0
+                            ) # Avdelning
+                            if selected_department != "All":
+                                selected_department_code = universities2[universities2['Department'] == selected_department]['Code'].values[0]
+                            else:
+                                selected_department_code = ""
+                        else:
+                            selected_institute_code = ""
+                    else:
+                        selected_university_code = ""
+
+                    if selected_university != "All":
+                        if selected_institute != "All":
+                            if selected_department != "All":
+                                affiliation_search = f'{selected_university_code}.{selected_institute_code}.{selected_department_code}'
+                            else:
+                                affiliation_search = f'{selected_university_code}.{selected_institute_code}'
+                        else: 
+                            affiliation_search = f'{selected_university_code}'
+
+                    if selected_university != "All":
+                        df = df[
+                            df[column].astype(str).str.startswith(affiliation_search) |
+                            df[column].astype(str).str.contains(f';{affiliation_search}')
+                        ]
+
+                elif column == "Year":
+                    year_range = right.slider('År:', min_value=1990, max_value=2024, value=(1990, 2024)) # År slider
+                    fran_ar, till_ar = year_range
+                    df = df.loc[df[column].between(fran_ar, till_ar)]
+
                 elif is_categorical_dtype(df[column]) or df[column].nunique() < 50:
                     user_cat_input = right.multiselect(
                         f"Values for {column}",
@@ -580,30 +617,20 @@ elif navigation == 'Tidsskrifter':
                         default=list(df[column].unique()),
                     )
                     df = df[df[column].isin(user_cat_input)]
-                elif is_numeric_dtype(df[column]):
-                    _min = float(df[column].min())
-                    _max = float(df[column].max())
-                    step = (_max - _min) / 100
-                    user_num_input = right.slider(
-                        f"Values for {column}",
-                        min_value=_min,
-                        max_value=_max,
-                        value=(_min, _max),
-                        step=step,
-                    )
-                    df = df[df[column].between(*user_num_input)]
-                elif is_datetime64_any_dtype(df[column]):
-                    user_date_input = right.date_input(
-                        f"Values for {column}",
-                        value=(
-                            df[column].min(),
-                            df[column].max(),
-                        ),
-                    )
-                    if len(user_date_input) == 2:
-                        user_date_input = tuple(map(pd.to_datetime, user_date_input))
-                        start_date, end_date = user_date_input
-                        df = df.loc[df[column].between(start_date, end_date)]
+
+                # elif is_numeric_dtype(df[column]):
+                #     _min = float(df[column].min())
+                #     _max = float(df[column].max())
+                #     step = (_max - _min) / 100
+                #     user_num_input = right.slider(
+                #         f"Values for {column}",
+                #         min_value=_min,
+                #         max_value=_max,
+                #         value=(_min, _max),
+                #         step=step,
+                #     )
+                #     df = df[df[column].between(*user_num_input)]
+
                 else:
                     user_text_input = right.text_input(
                         f"Filter for {column} containing:",
@@ -617,6 +644,8 @@ elif navigation == 'Tidsskrifter':
 
     # Filter the DataFrame
     filtered_df = filter_dataframe(df)
+
+    st.write(' ')
 
     # Search button
     search_button = st.button('Search')
@@ -659,23 +688,48 @@ elif navigation == 'Tidsskrifter':
             st.write('---')
     else:
         st.write('Please select filters.')
-        st.write(' ')
-        st.write(' ')
-        st.write(' ')
-        st.write(' ')
-        st.write(' ')
-        st.write('---')
+        # st.write('')
+        # st.write('')
 
-    st.subheader('Top journals overall')
-    st.write(' ')
+        # # Group by journal and count the number of papers
+        # journal_counts = filtered_df['Journal'].value_counts().reset_index()
+        # journal_counts.index = journal_counts.index + 1
+        # journal_counts.columns = ['Journal', 'Total Papers']
 
-    # Group by journal and count the number of papers
-    df_counts = df['Journal'].value_counts().reset_index()
-    df_counts.index = df_counts.index + 1
-    df_counts.columns = ['Journal', 'Total Papers']
+        # # Display the grouped DataFrame
+        # st.write('---')
+        # st.subheader("Top Journals overall")
+        # st.dataframe(journal_counts.head(50), width=1200, height=400)
 
-    # Apply truncation to the 'Journal' column
-    st.dataframe(df_counts, width=1200, height=800)
+        # # Function to truncate journal names
+        # def truncate_journal_name(name, max_length=40):
+        #     if len(name) > max_length:
+        #         return name[:max_length] + '...'
+        #     return name
+
+        # # Apply truncation to the 'Journal' column
+        # journal_counts['Truncated Journal'] = journal_counts['Journal'].apply(truncate_journal_name)
+
+        # # Sort by "Total Papers" in descending order and select the top 10
+        # top_journals = journal_counts.sort_values(by="Total Papers", ascending=False).head(10)
+        
+    #     st.write(' ')
+    #     st.write(' ')
+    #     st.write(' ')
+    #     st.write(' ')
+    #     st.write(' ')
+    #     st.write('---')
+
+    # st.subheader('Top journals overall')
+    # st.write(' ')
+
+    # # Group by journal and count the number of papers
+    # df_counts = df['Journal'].value_counts().reset_index()
+    # df_counts.index = df_counts.index + 1
+    # df_counts.columns = ['Journal', 'Total Papers']
+
+    # # Apply truncation to the 'Journal' column
+    # st.dataframe(df_counts, width=1200, height=800)
 
 elif navigation == 'Forskare':
 
